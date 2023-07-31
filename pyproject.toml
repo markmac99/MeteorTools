@@ -7,11 +7,11 @@ requires      = ["setuptools>=61.0.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "ukmon_meteortools"
+name = "MeteorTools"
 version = "2023.07.10"
 description = "Python Tools for Meteor Data Analysis"
-readme = "ukmon_meteortools/README.md"
-authors = [{ name = "Mark McIntyre", email = "ukmon@markmcintyreastro.co.uk" }]
+readme = "mjmm_meteortools/README.md"
+authors = [{ name = "Mark McIntyre", email = "markmcintyre99@googlemail.com" }]
 license = { file = "LICENSE" }
 classifiers = [
     "Programming Language :: Python",
@@ -68,12 +68,12 @@ dev = ["bumpver", "gitpython", "behave", "pytest", "pip-tools"]
 
 [tool.setuptools]
 #package-dir = {"" = "ukmon_pylib"}
-packages = ["ukmon_meteortools.utils", "ukmon_meteortools.ukmondb", 
-        "ukmon_meteortools.fileformats", "ukmon_meteortools.rmsutils", 
-        "ukmon_meteortools.share"]
+packages = ["mjmm_meteortools.utils", "mjmm_meteortools.ukmondb", 
+        "mjmm_meteortools.fileformats", "mjmm_meteortools.rmsutils", 
+        "mjmm_meteortools.share"]
 
 #[tool.setuptools.packages.find]
-#where = ["ukmon_meteortools"]
+#where = ["mjmm_meteortools"]
 
 [tool.setuptools.package-data]
 "*" = ["*.npy", "*.xml"]
@@ -88,8 +88,8 @@ push = true
 
 [tool.bumpver.file_patterns]
 "pyproject.toml" = ['version = "{version}"',]
-"ukmon_meteortools/__init__.py" = ['__version__ = "{version}"',]
-#"ukmon_meteortools/README.md" = ["{version}",]
+"mjmm_meteortools/__init__.py" = ['__version__ = "{version}"',]
+#"mjmm_meteortools/README.md" = ["{version}",]
 
 [tool.pytest.ini_options]
 filterwarnings = [
