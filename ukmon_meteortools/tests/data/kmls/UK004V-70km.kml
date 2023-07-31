@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?><kml xmlns='http://earth.google.com/kml/2.1'><Folder><name>UK004V</name><open>1</open><Placemark id='UK004V'>
+                 <Style id='camera'>
+                  <LineStyle>
+                <width>1.5</width>
+                  </LineStyle>
+                  <PolyStyle>
+                <color>40000800</color>
+                  </PolyStyle>
+                </Style>
+                <styleUrl>#camera</styleUrl>
+<name>UK004V</name>
+                <description>Area height: 70 km
+
+    </description>
+    
+    <MultiGeometry>    <Polygon>
+        <extrude>0</extrude>
+        <altitudeMode>absolute</altitudeMode>
+        <outerBoundaryIs>
+            <LinearRing>
+                <coordinates>
+                    -0.239074,56.037659,70001
+                    1.178511,56.277437,70001
+                    2.119962,55.419396,70000
+                    2.145271,55.436216,70000
+                    0.939243,55.119434,70000
+                    0.336326,54.889604,70001
+                    -0.001515,54.672400,70001
+                    -0.183398,54.424426,70002
+                    -0.036291,53.990738,70005
+                    -0.471531,53.774702,70006
+                    -0.953345,53.561694,70008
+                    -1.440843,53.241977,70011
+                    -1.560531,53.392354,70009
+                    -2.065580,53.986079,70005
+                    -2.383729,54.310810,70003
+                    -2.569136,54.566701,70002
+                    -2.620620,54.818891,70001
+                    -2.623279,54.816785,70001
+                    -2.478313,54.939969,70001
+                    -2.337883,55.035738,70000
+                    -2.186173,55.116594,70000
+                    -2.213063,55.243041,70000
+                    -2.155116,55.340154,70000
+                    -2.107311,55.442390,70000
+                    -1.939757,55.541632,70000
+                    -1.577056,55.673198,70000
+                    -0.757888,55.958903,70001
+                </coordinates>
+            </LinearRing>
+        </outerBoundaryIs>
+    </Polygon>    </MultiGeometry>
+    </Placemark>
+    </Folder>
+    </kml> 

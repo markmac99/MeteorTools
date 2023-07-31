@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ufocapture_record version="215" y="2020" mo="07" d="11" h="01" m="46" s="12.18" trig="1" frames="89" lng="-0.1692" lat="51.6374" alt="86.0" tz="0" u2="224" cx="720" cy="576" fps="25.000" head="30" tail="30" diff="1" sipos="5" sisize="9" dlev="31" dsize="2" lid="EastBarnet" observer="Jim_Rowe" sid="NW" cam="Watec_902H2_Ultimate" lens="Tamron_GL412IRDD" cap="Dazzle_DVD_HD" comment="" interlace="1" bbf="0" dropframe="0">
+    <ufocapture_paths hit="5">
+     <uc_path fno="30" ono="19" pixel="2" bmax="215" x="472.5" y="347.0"></uc_path>
+     <uc_path fno="30" ono="12" pixel="2" bmax="225" x="387.5" y="328.0"></uc_path>
+     <uc_path fno="30" ono="14" pixel="2" bmax="225" x="469.5" y="252.0"></uc_path>
+     <uc_path fno="30" ono="16" pixel="8" bmax="225" x="481.3" y="244.0"></uc_path>
+     <uc_path fno="57" ono="18" pixel="2" bmax="149" x="252.5" y="75.0"></uc_path>
+    </ufocapture_paths>
+</ufocapture_record>

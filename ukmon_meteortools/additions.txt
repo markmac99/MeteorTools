@@ -1,0 +1,14 @@
+boto3
+gmplot
+google-auth-oauthlib
+google-api-python-client
+pandas
+xmltodict
+tweepy
+fastparquet
+cryptography
+python-crontab
+simplekml
+astropy
+gitpython
+s3fs

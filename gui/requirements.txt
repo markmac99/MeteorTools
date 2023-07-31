@@ -1,0 +1,5 @@
+# requirements for the fbCollector tool
+# Copyright (C) 2018-2023 Mark McIntyre
+boto3
+Pillow
+paramiko

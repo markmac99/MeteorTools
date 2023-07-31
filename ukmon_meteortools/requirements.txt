@@ -1,0 +1,48 @@
+# Copyright (C) 2018-2023 Mark McIntyre
+
+#cartopy INSTALL THIS WITH CONDA
+# skip this
+#https://github.com/matplotlib/basemap/archive/master.zip
+basemap
+boto3
+Cython
+gmplot
+google-auth
+google-auth-oauthlib
+google-api-python-client
+googleapis-common-protos
+jplephem
+Keras
+matplotlib==3.3.2 ; python_version <= "3.8"
+matplotlib ; python_version > "3.8"
+numpy
+oauthlib
+pandas
+Pillow
+pycparser
+pyephem
+pyproj==1.9.6 ; python_version <= "3.8" and platform_machine == 'armv7l'
+pyproj==2.6.1.post1 ; python_version <= "3.8" and platform_machine != 'armv7l'
+pyproj ; python_version > "3.8"
+PyQt5; platform_machine != 'aarch64'
+pyswarms
+pytz
+PyYAML
+scipy
+Shapely
+xmltodict
+tweepy
+fastparquet
+cryptography
+python-crontab
+simplekml
+astropy
+gitpython
+pymysql
+mysql-connector-python
+pre-commit
+s3fs
+# pyarrow
+pytest
+behave
+pdoc

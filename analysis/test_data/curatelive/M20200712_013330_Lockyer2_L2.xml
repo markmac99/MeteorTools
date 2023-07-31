@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ufocapture_record version="215" y="2020" mo="07" d="12" h="01" m="33" s="30.10" trig="1" frames="73" lng="-3.2193" lat="50.6881" alt="175.0" tz="0" u2="224" cx="720" cy="576" fps="25.000" head="30" tail="30" diff="1" sipos="1" sisize="15" dlev="39" dsize="3" lid="Lockyer2" observer="Norman_Lockyer" sid="L2" cam="KPF131HR" lens="TOKINA_TV0398" cap="" comment="" interlace="1" bbf="0" dropframe="0">
+    <ufocapture_paths hit="12">
+     <uc_path fno="30" ono="9" pixel="3" bmax="56" x="237.0" y="342.3"></uc_path>
+     <uc_path fno="30" ono="9" pixel="5" bmax="52" x="233.2" y="345.0"></uc_path>
+     <uc_path fno="31" ono="9" pixel="9" bmax="68" x="230.2" y="347.3"></uc_path>
+     <uc_path fno="32" ono="9" pixel="9" bmax="70" x="227.0" y="349.6"></uc_path>
+     <uc_path fno="33" ono="9" pixel="6" bmax="87" x="224.0" y="352.5"></uc_path>
+     <uc_path fno="34" ono="9" pixel="7" bmax="83" x="220.9" y="354.4"></uc_path>
+     <uc_path fno="35" ono="9" pixel="4" bmax="67" x="218.5" y="356.5"></uc_path>
+     <uc_path fno="36" ono="9" pixel="5" bmax="50" x="214.4" y="359.6"></uc_path>
+     <uc_path fno="38" ono="9" pixel="4" bmax="54" x="208.3" y="364.8"></uc_path>
+     <uc_path fno="39" ono="9" pixel="6" bmax="83" x="206.0" y="366.5"></uc_path>
+     <uc_path fno="40" ono="9" pixel="4" bmax="60" x="203.0" y="368.5"></uc_path>
+     <uc_path fno="41" ono="9" pixel="3" bmax="50" x="200.3" y="370.3"></uc_path>
+    </ufocapture_paths>
+</ufocapture_record>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ufocapture_record version="215" y="2020" mo="07" d="12" h="00" m="11" s="22.50" trig="1" frames="65" lng="-0.7275" lat="51.2631" alt="57.0" tz="0" u2="224" cx="720" cy="576" fps="25.000" head="30" tail="30" diff="1" sipos="1" sisize="15" dlev="82" dsize="3" lid="Ash_Vale" observer="KACRI" sid="K1" cam="KDM-6101G" lens="Computar_TG3Z2910FCS" cap="Dazzle" comment="" interlace="1" bbf="0" dropframe="0">
+    <ufocapture_paths hit="4">
+     <uc_path fno="30" ono="7" pixel="3" bmax="122" x="35.7" y="190.7"></uc_path>
+     <uc_path fno="30" ono="7" pixel="5" bmax="105" x="33.6" y="189.8"></uc_path>
+     <uc_path fno="32" ono="7" pixel="4" bmax="113" x="31.0" y="189.0"></uc_path>
+     <uc_path fno="33" ono="7" pixel="3" bmax="122" x="29.3" y="187.7"></uc_path>
+    </ufocapture_paths>
+</ufocapture_record>

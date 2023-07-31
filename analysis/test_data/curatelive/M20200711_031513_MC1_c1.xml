@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ufocapture_record version="215" y="2020" mo="07" d="11" h="03" m="15" s="13.31" trig="1" frames="63" lng="-3.3422" lat="51.5504" alt="78.2" tz="0" u2="224" cx="720" cy="576" fps="25.000" head="30" tail="30" diff="1" sipos="1" sisize="30" dlev="18" dsize="3" lid="MC1" observer="cas13" sid="c1" cam="Sony" lens="Fuji" cap="ulead" comment="test" interlace="1" bbf="0" dropframe="0">
+    <ufocapture_paths hit="3">
+     <uc_path fno="30" ono="19" pixel="4" bmax="32" x="310.0" y="82.0"></uc_path>
+     <uc_path fno="30" ono="19" pixel="11" bmax="44" x="305.0" y="75.9"></uc_path>
+     <uc_path fno="31" ono="19" pixel="9" bmax="41" x="299.7" y="69.7"></uc_path>
+    </ufocapture_paths>
+</ufocapture_record>

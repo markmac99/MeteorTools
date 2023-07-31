@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ufoanalyzer_record version ="200"
+	 clip_name="" o="0" y="0" mo="0"
+	 d="0" h="0" m="0" s="0.000000"
+	 tz="0" tme="1.000000" lid="TACKLEY" sid="NE"
+	 lng="-1.316700" lat="51.866699" alt="80.000000" cx="720"
+	 cy="576" fps="0.000000" interlaced="1" bbf="0"
+	 frames="0" head="30" tail="0" drop="0"
+	 dlev="0" dsize="0" sipos="0" sisize="0"
+	 trig="0" observer="MARK_MCINTYRE" cam="TAC_C2" lens="1.4MM"
+	 cap="" u2="" ua="" memo=""
+	 az="40.874680" ev="38.830410" rot="-24.368336" vx="71.905220"
+	 yx="0.938069" dx="2.665931" dy="-36.877949" k4="0.000000"
+	 k3="-0.044114" k2="0.000014" atc="58.200001" BVF="-0.300000"
+	 maxLev="255" maxMag="1.703000" minLev="30" mimMag="4.000000"
+	 dl="0" leap="0" pixs="0" rstar="0"
+	 ddega="0.000000" ddegm="0.000000" errm="0.000000" Lmrgn="5"
+	 Rmrgn="5" Dmrgn="5" Umrgn="5">
+</ufoanalyzer_record>

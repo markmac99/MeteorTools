@@ -1,0 +1,38 @@
+---
+- hosts: ukmonhelper
+  gather_facts: no
+  tasks:
+  - name: import variables 
+    include_vars: ./vars.yml
+    tags: [dev,prod]
+  - name: Ensures {{destdir}} exists
+    file: path={{destdir}} state=directory  
+    delegate_to: localhost
+    tags: [dev,prod]
+  - name: Copy files
+    copy: src={{ item.src }} dest={{ item.dest }} mode={{ item.mode }}
+    tags: [dev,prod]
+    delegate_to: localhost
+    with_items:
+    #- {src: '{{srcdir}}/ukmon_pylib/', dest: '{{destdir}}/ukmon_pylib/', mode: '644', backup: no, directory_mode: yes }
+    - {src: '{{srcdir}}/analysis/multiTrackStack.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/refreshLocalCopy.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/refresh_local_copy.sh', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/analysis.ini', dest: '{{destdir}}/', mode: '644', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/uploadOrbit.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/uploadImprovedFTP.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/helperfunctions.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/getFireballFiles.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/manualReduction.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/fireballAnalyser.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/uploadImprovedFBFiles.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/makePPallFromPP.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/getVideoDataForYT.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/mp4retrConfig.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/archive/costs/getCostMetrics.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/getGMNData.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/gui/fbCollector.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/gui/fireballCollector.py', dest: '{{destdir}}/python/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/gui/config.ini', dest: '{{destdir}}/python/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/gui/noimage.jpg', dest: '{{destdir}}/python/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/gui/ukmon.ico', dest: '{{destdir}}/python/', mode: '755', backup: no, directory_mode: no }

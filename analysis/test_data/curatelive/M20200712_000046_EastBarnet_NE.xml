@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ufocapture_record version="215" y="2020" mo="07" d="12" h="00" m="00" s="46.60" trig="1" frames="293" lng="-0.1692" lat="51.6374" alt="86.0" tz="0" u2="224" cx="720" cy="576" fps="25.000" head="30" tail="250" diff="1" sipos="5" sisize="9" dlev="32" dsize="2" lid="EastBarnet" observer="Jim_Rowe" sid="NE" cam="Watec_902H2_Ultimate" lens="Computar_HG3Z4512FCS-IR" cap="Dazzle_DVD_HD" comment="" interlace="1" bbf="0" dropframe="0">
+    <ufocapture_paths hit="13">
+     <uc_path fno="30" ono="19" pixel="2" bmax="37" x="658.0" y="152.5"></uc_path>
+     <uc_path fno="30" ono="19" pixel="5" bmax="59" x="658.4" y="157.6"></uc_path>
+     <uc_path fno="31" ono="19" pixel="7" bmax="145" x="658.6" y="161.4"></uc_path>
+     <uc_path fno="32" ono="19" pixel="12" bmax="226" x="659.0" y="166.5"></uc_path>
+     <uc_path fno="33" ono="19" pixel="15" bmax="228" x="659.3" y="171.0"></uc_path>
+     <uc_path fno="34" ono="19" pixel="15" bmax="230" x="660.0" y="176.2"></uc_path>
+     <uc_path fno="35" ono="19" pixel="18" bmax="226" x="660.4" y="181.1"></uc_path>
+     <uc_path fno="36" ono="19" pixel="18" bmax="231" x="660.7" y="185.9"></uc_path>
+     <uc_path fno="37" ono="19" pixel="18" bmax="227" x="661.3" y="191.3"></uc_path>
+     <uc_path fno="38" ono="19" pixel="20" bmax="229" x="661.5" y="196.3"></uc_path>
+     <uc_path fno="39" ono="19" pixel="19" bmax="223" x="661.7" y="201.4"></uc_path>
+     <uc_path fno="40" ono="19" pixel="21" bmax="227" x="662.4" y="207.5"></uc_path>
+     <uc_path fno="41" ono="19" pixel="12" bmax="231" x="662.3" y="212.1"></uc_path>
+    </ufocapture_paths>
+</ufocapture_record>

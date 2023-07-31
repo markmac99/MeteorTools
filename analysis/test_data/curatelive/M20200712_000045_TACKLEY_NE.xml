@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ufocapture_record version="215" y="2020" mo="07" d="12" h="00" m="00" s="45.71" trig="1" frames="67" lng="-1.3167" lat="51.8667" alt="80.0" tz="0" u2="224" cx="720" cy="576" fps="25.000" head="30" tail="30" diff="1" sipos="5" sisize="15" dlev="34" dsize="3" lid="TACKLEY" observer="MARK_MCINTYRE" sid="NE" cam="TAC_C2" lens="1.4MM" cap="" comment="" interlace="1" bbf="0" dropframe="0">
+    <ufocapture_paths hit="7">
+     <uc_path fno="30" ono="6" pixel="10" bmax="73" x="626.0" y="538.0"></uc_path>
+     <uc_path fno="30" ono="6" pixel="14" bmax="66" x="626.1" y="541.1"></uc_path>
+     <uc_path fno="31" ono="6" pixel="14" bmax="87" x="625.2" y="544.6"></uc_path>
+     <uc_path fno="32" ono="6" pixel="25" bmax="103" x="624.6" y="548.1"></uc_path>
+     <uc_path fno="33" ono="6" pixel="21" bmax="92" x="623.4" y="551.9"></uc_path>
+     <uc_path fno="34" ono="6" pixel="20" bmax="116" x="623.0" y="555.1"></uc_path>
+     <uc_path fno="35" ono="6" pixel="14" bmax="85" x="622.1" y="558.0"></uc_path>
+    </ufocapture_paths>
+</ufocapture_record>

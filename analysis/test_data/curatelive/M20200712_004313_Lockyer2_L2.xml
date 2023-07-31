@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ufocapture_record version="215" y="2020" mo="07" d="12" h="00" m="43" s="13.99" trig="1" frames="66" lng="-3.2193" lat="50.6881" alt="175.0" tz="0" u2="224" cx="720" cy="576" fps="25.000" head="30" tail="30" diff="1" sipos="1" sisize="15" dlev="38" dsize="3" lid="Lockyer2" observer="Norman_Lockyer" sid="L2" cam="KPF131HR" lens="TOKINA_TV0398" cap="" comment="" interlace="1" bbf="0" dropframe="0">
+    <ufocapture_paths hit="6">
+     <uc_path fno="30" ono="9" pixel="7" bmax="75" x="632.7" y="159.7"></uc_path>
+     <uc_path fno="30" ono="9" pixel="10" bmax="119" x="638.3" y="159.0"></uc_path>
+     <uc_path fno="31" ono="9" pixel="14" bmax="115" x="643.9" y="158.6"></uc_path>
+     <uc_path fno="32" ono="9" pixel="18" bmax="155" x="649.2" y="158.3"></uc_path>
+     <uc_path fno="33" ono="9" pixel="18" bmax="178" x="654.1" y="157.8"></uc_path>
+     <uc_path fno="34" ono="9" pixel="6" bmax="59" x="659.0" y="157.5"></uc_path>
+    </ufocapture_paths>
+</ufocapture_record>
