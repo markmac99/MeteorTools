@@ -22,13 +22,13 @@ pip install MeteorTools
 ## Usage
 
 ``` python
-from mjmm_meteortools import utils
+from meteortools import utils
 help(utils)
 help(utils.sendAnEmail)
 ```
 
 ```python
->>>from ukmon_meteortools.utils import date2JD, jd2LST, getActiveShowers, getShowerDets
+>>>from meteortools.utils import date2JD, jd2LST, getActiveShowers, getShowerDets
 >>> date2JD(2023,4,11,12,45,9)
 2460046.0313541666
 >>>import numpy as np
@@ -38,7 +38,6 @@ help(utils.sendAnEmail)
 >>> getActiveShowers(datetime.datetime.now())
 LYR
 ETA
->>> from ukmon_meteortools.utils import getShowerDets
 >>> getShowerDets('LYR')
 (6, 'April Lyrids', 32.0, '04-22')
 >>>
