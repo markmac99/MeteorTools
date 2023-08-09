@@ -1,7 +1,7 @@
 # Copyright (C) 2018-2023 Mark McIntyre
 #
 import numpy as np
-from ukmon_meteortools.utils import date2JD
+from utils import date2JD
 
 
 def sollon2jd(Year, Month, Long):

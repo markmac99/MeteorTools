@@ -2,7 +2,7 @@
 #
 # simple script to get the active shower list from the IMO working list
 
-from ukmon_meteortools.fileformats import imoWorkingShowerList as iwsl
+from fileformats import imoWorkingShowerList as iwsl
 import datetime
 
 

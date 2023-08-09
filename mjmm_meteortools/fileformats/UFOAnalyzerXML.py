@@ -5,7 +5,7 @@ import xmltodict
 import datetime
 import math
 import numpy
-from ukmon_meteortools.utils import datetime2JD, altAz2RADec
+from utils import datetime2JD, altAz2RADec
 
 
 class UAXml:

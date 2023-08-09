@@ -13,7 +13,8 @@ except Exception:
     print('RMS not available')
 
 
-def multiTrackStack(camlist, start, end, outdir=None, shwr=None, scale=None, draw_cons=False, noplot=True, datadir=None):
+def multiTrackStack(camlist, start, end, outdir=None, shwr=None, scale=None, draw_cons=False, noplot=True, 
+                    datadir=None, draw_constellations=None):
     """
     create a multi camera and/or multi night trackstack  
 
@@ -58,7 +59,7 @@ def multiTrackStack(camlist, start, end, outdir=None, shwr=None, scale=None, dra
         dtstr = d.strftime('%Y%m%d')
         for cam in camlist:
             cam = cam.upper()
-            camdir = os.path.join(datadir, cam, 'ConfirmedFiles')
+            camdir = os.path.join(datadir, cam, 'ArchivedFiles')
             dirs = glob.glob1(camdir, f'{cam}_{dtstr}*')
             if len(dirs) > 0: 
                 srcdir = os.path.join(camdir, dirs[0])
@@ -67,14 +68,13 @@ def multiTrackStack(camlist, start, end, outdir=None, shwr=None, scale=None, dra
                     print(f'using {ftpdet}')
                     dir_paths.append(srcdir)
         d = d + datetime.timedelta(days=1)
-
     config = cr.loadConfigFromDirectory('.config', dir_paths[0])
     if shwr is not None:
         shwr = [shwr]
 
     trackStack(dir_paths, config, border=5, background_compensation=True, 
         hide_plot=noplot, showers=shwr, darkbackground=False, out_dir=outdir, scalefactor=scale,
-        draw_constellations=draw_cons)
+        draw_constellations=draw_constellations)
 
     if len(camlist) > 1:
         bn = os.path.basename(dir_paths[-1])
