@@ -7,7 +7,7 @@ import xmltodict
 import datetime
 import os
 import numpy as np
-from utils import jd2Date, sollon2jd
+from ..utils import jd2Date, sollon2jd
 import copy
 
 # imported from $SRC/share

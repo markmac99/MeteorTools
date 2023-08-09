@@ -10,7 +10,7 @@ try:
 except:
     print('WMPL not available')
 
-from ukmondb.getLiveImages import _download
+from ..ukmondb.getLiveImages import _download
 
 
 def getTrajPickle(trajname):

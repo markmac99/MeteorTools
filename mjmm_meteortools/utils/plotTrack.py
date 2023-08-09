@@ -4,7 +4,7 @@ import csv
 from matplotlib import pyplot as plt
 import numpy as np
 
-from utils import greatCircleDistance
+from ..utils import greatCircleDistance
 
 
 def trackToDistvsHeight(trackcsvfile):

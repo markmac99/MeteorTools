@@ -5,7 +5,7 @@ import json
 import os 
 import pandas as pd
 
-from fileformats import trackCsvtoKML
+from ..fileformats import trackCsvtoKML
 
 
 def trajectoryKML(trajname, outdir=None):

@@ -4,7 +4,7 @@
 
 import datetime
 
-from fileformats import imoWorkingShowerList as iwsl
+from ..fileformats import imoWorkingShowerList as iwsl
 
 
 def getShowerDets(shwr, stringFmt=False, dataPth=None):

@@ -9,7 +9,7 @@ import configparser as crp
 import json
 import datetime
 
-from utils import date2JD, angleBetweenSphericalCoords
+from ..utils import date2JD, angleBetweenSphericalCoords
 
 
 def filterFTPforSpecificTime(ftpfile, dtstr):
