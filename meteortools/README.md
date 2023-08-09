@@ -35,7 +35,7 @@ help(utils.sendAnEmail)
 >>> jd2LST(2460046.0313541666, lon=np.radians(-1.31))
 (30.741774823384617, 30.76463863658577)
 >>> import datetime
->>> getActiveShowers(datetime.datetime.now())
+>>> getActiveShowers(datetime.datetime.now().strftime('%Y%m%s'))
 LYR
 ETA
 >>> getShowerDets('LYR')

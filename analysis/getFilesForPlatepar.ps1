@@ -31,7 +31,7 @@ if ((test-path $targpth) -eq 0) {mkdir $targpth}
 set-location $targpth
 
 # copy the required files
-python -c "from ukmon_meteortools.ukmondb import getFBfiles; getFBfiles('${cam}_${dt}_210000', '${targpth}');"
+python -c "from meteortools.ukmondb import getFBfiles; getFBfiles('${cam}_${dt}_210000', '${targpth}');"
 
 (Get-Content -path $targpth/.config) -replace 'gaia_dr2_mag_11.5.npy','BSC5' > $targpth/.config.new
 copy-item $targpth/.config.new $targpth/.config

@@ -24,7 +24,7 @@ from tkinter.ttk import Label, Style, LabelFrame, Scrollbar
 from PIL import Image as img
 from PIL import ImageTk
 
-from ukmon_meteortools.ukmondb import getFBfiles, getLiveJpgs, createTxtFile
+from meteortools.ukmondb import getFBfiles, getLiveJpgs, createTxtFile
 
 
 config_file = ''

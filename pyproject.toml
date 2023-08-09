@@ -60,8 +60,8 @@ requires-python = ">=3.7"
 dev = ["bumpver", "gitpython", "behave", "pytest", "pip-tools"]
 
 [project.urls]
-"Homepage" = "https://markmac99.github.io/UKmon-shared/ukmon_meteortools.html"
-"Bug Tracker" = "https://github.com/markmac99/UKMon-shared/issues"
+"Homepage" = "https://markmac99.github.io/MeteorTools/"
+"Bug Tracker" = "https://github.com/markmac99/MeteorTools/issues"
 
 #[project.scripts]
 #realpython = "reader.__main__:main"
