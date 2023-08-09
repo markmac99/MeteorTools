@@ -1,4 +1,4 @@
-param ($cams, $dates, $shwrs="ALL", $outdir="c:/temp", $scalefactor=3, $constellations=1)
+param ($dates, $shwrs="ALL", $outdir="c:/temp", $scalefactor=3, $constellations=1)
 
 # Copyright (C) 2018-2023 Mark McIntyre 
 
@@ -19,8 +19,9 @@ $conflag=""
 if ($constellations -eq 1){
     $conflag="--constellations"
 }
+$camlist = 'uk0006,uk000f,uk001l,uk002f'
 
 push-Location $ini['rms']['rms_loc']
-Write-Output "$cams $dates $shwrs $outdir $scalefactor $conflag"
-python -m usertools.multiTrackStack $cams $dates -s $shwrs -o $outdir -f $scalefactor $conflag
+Write-Output "$camlist $dates $shwrs $outdir $scalefactor $conflag"
+python -m meteortools.rmsutils.multiTrackStack $camlist $dates -s $shwrs -o $outdir -f $scalefactor $conflag
 pop-location

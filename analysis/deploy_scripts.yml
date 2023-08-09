@@ -17,6 +17,7 @@
     #- {src: '{{srcdir}}/ukmon_pylib/', dest: '{{destdir}}/ukmon_pylib/', mode: '644', backup: no, directory_mode: yes }
     - {src: '{{srcdir}}/analysis/multiTrackStack.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/refreshLocalCopy.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/allCameraRadiantMap.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/refresh_local_copy.sh', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/analysis.ini', dest: '{{destdir}}/', mode: '644', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/uploadOrbit.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
@@ -29,7 +30,6 @@
     - {src: '{{srcdir}}/analysis/makePPallFromPP.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/getVideoDataForYT.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/mp4retrConfig.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
-    - {src: '{{srcdir}}/archive/costs/getCostMetrics.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/getGMNData.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/gui/fbCollector.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/gui/fireballCollector.py', dest: '{{destdir}}/python/', mode: '755', backup: no, directory_mode: no }

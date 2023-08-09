@@ -6,3 +6,4 @@ astropy
 xmltodict
 boto3
 matplotlib
+meteortools
