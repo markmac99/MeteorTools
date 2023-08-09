@@ -5,7 +5,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from fileformats import trackCsvtoKML
+from ..fileformats import trackCsvtoKML
 try:
     from wmpl.Utils.Pickling import loadPickle
 except:
