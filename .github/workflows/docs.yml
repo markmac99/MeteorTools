@@ -4,7 +4,7 @@ name: documentation
 on:
   push:
     branches:
-      - markmac99
+      - main
     # Alternative: only build for tags.
     # tags:
     #   - '*'
