@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 name = "MeteorTools"
 version = "2023.07.10"
 description = "Python Tools for Meteor Data Analysis"
-readme = "mjmm_meteortools/README.md"
+readme = "meteortools/README.md"
 authors = [{ name = "Mark McIntyre", email = "markmcintyre99@googlemail.com" }]
 license = { file = "LICENSE" }
 classifiers = [
@@ -68,9 +68,9 @@ dev = ["bumpver", "gitpython", "behave", "pytest", "pip-tools"]
 
 [tool.setuptools]
 #package-dir = {"" = "ukmon_pylib"}
-packages = ["mjmm_meteortools.utils", "mjmm_meteortools.ukmondb", 
-        "mjmm_meteortools.fileformats", "mjmm_meteortools.rmsutils", 
-        "mjmm_meteortools.share"]
+packages = ["meteortools.utils", "meteortools.ukmondb", 
+        "meteortools.fileformats", "meteortools.rmsutils", 
+        "meteortools.share"]
 
 #[tool.setuptools.packages.find]
 #where = ["mjmm_meteortools"]
@@ -88,8 +88,8 @@ push = true
 
 [tool.bumpver.file_patterns]
 "pyproject.toml" = ['version = "{version}"',]
-"mjmm_meteortools/__init__.py" = ['__version__ = "{version}"',]
-#"mjmm_meteortools/README.md" = ["{version}",]
+"meteortools/__init__.py" = ['__version__ = "{version}"',]
+#"meteortools/README.md" = ["{version}",]
 
 [tool.pytest.ini_options]
 filterwarnings = [

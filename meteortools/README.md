@@ -1,23 +1,28 @@
-# ukmon_meteortools
+# MeteorTools
 
-Python tools and utilities to work with meteor data from the UK Meteor Network
+Python tools and utilities including some to work with meteor data from the UK Meteor Network and with data from GMN
 
 To get more information about the submodules and functions use Python's built-in help capability, for example
 as shown here. 
 
-## Installation on a Raspberry Pi
+## Installation on Windows
+On Windows you'll need to use Conda to install some packages first otherwise you will get errors from Pip. This is because these packages are not available in PyPi in a useable form.
+``` bash
+ conda install cartopy shapely pyproj
+pip install MeteorTools
+ ```
+
+## Installation on a Raspberry Pi and Linux
 To install these tools on aa Raspberry Pi you must first install GEOS and PROJ  
 ``` bash
 sudo apt-get install -y libgeos-dev proj-bin
+pip install MeteorTools
 ```
-You may also need to install these on some other Linux platforms. If you see an error that geos_c.h cannot be found
-or that PROJ_LIB is not defined, install the above packages. 
-
 
 ## Usage
 
 ``` python
-from ukmon_meteortools import utils
+from mjmm_meteortools import utils
 help(utils)
 help(utils.sendAnEmail)
 ```
