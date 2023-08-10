@@ -60,7 +60,7 @@ class IMOshowerList:
         pksollong = -1
         subset = self.fullstreamdata[np.where(self.fullstreamdata[:,3]==iaucode)]
         if subset is not None:
-            mtch = [sh for sh in subset if sh[6] > '-1']
+            mtch = [sh for sh in subset if int(sh[6]) > -1]
             if len(mtch) > 0:
                 ds2 = copy.deepcopy(ds)
                 ds2['IAU_code'] = mtch[-1][3].strip()
