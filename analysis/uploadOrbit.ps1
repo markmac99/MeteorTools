@@ -77,13 +77,15 @@ if ($jpgs -is [array]) {
 # copy the trajectory solution over
 $targ="ukmeteornetworkarchive/reports/$yr/orbits/$ym/$yd/$newname"
 aws s3 sync "$srcpath" "s3://$targ" --include "*" --exclude "*.jpg" --exclude "*.mp4" --profile $awsprofile
+$targ="ukmda-website/reports/$yr/orbits/$ym/$yd/$newname"
+aws s3 sync "$srcpath" "s3://$targ" --include "*" --exclude "*.jpg" --exclude "*.mp4" --profile ukmda_admin
 
 # push the pickle and report to ukmon-shared
-$targ="ukmon-shared/matches/RMSCorrelate/trajectories/$yr/$ym/$yd/$newname"
+$targ="ukmda-shared/matches/RMSCorrelate/trajectories/$yr/$ym/$yd/$newname"
 $pickle=(get-item "$srcpath/*.pickle").name
 aws s3 cp "$srcpath/$pickle" "s3://$targ/" --profile $awsprofile
 $repfile=(get-item "$srcpath/*report.txt").name
-aws s3 cp "$srcpath/$repfile" "s3://$targ/" --profile $awsprofile
+aws s3 cp "$srcpath/$repfile" "s3://$targ/" --profile ukmda_admin
 
 
 # push the jpgs and mp4s to the website
@@ -91,28 +93,32 @@ $targ="ukmeteornetworkarchive/img/single/$yr/$ym/"
 aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.jpg" --profile $awsprofile
 $targ="ukmeteornetworkarchive/img/mp4/$yr/$ym/"
 aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.mp4" --profile $awsprofile
+$targ="ukmda-website/img/single/$yr/$ym/"
+aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.jpg" --profile ukmda_admin
+$targ="ukmda-website/img/mp4/$yr/$ym/"
+aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.mp4" --profile ukmda_admin
 
 # add row to dailyreport file
 $pf=(Get-ChildItem "$srcpath/*.pickle").fullname
 $pf=$pf.replace('\','/')
 $env:DATADIR="f:/videos/meteorcam/ukmondata"
-aws s3 cp s3://ukmon-shared/consolidated/camera-details.csv $env:DATADIR/consolidated/  --profile $awsprofile
-$newl=(python -c "import reports.reportOfLatestMatches as rml ; print(rml.processLocalFolder('$pf','/home/ec2-user/ukmon-shared/matches/RMSCorrelate'))")
+aws s3 cp s3://ukmda-shared/consolidated/camera-details.csv $env:DATADIR/consolidated/  --profile ukmda_admin
+$newl=(python -c "import reports.reportOfLatestMatches as rml ; print(rml.processLocalFolder('$pf','/home/ec2-user/ukmda-shared/matches/RMSCorrelate'))")
 
 $dlyfile="$yd.txt"
-scp "ukmonhelper:prod/data/dailyreports/$dlyfile" .
+scp "ukmonhelper2:prod/data/dailyreports/$dlyfile" .
 $x=(select-string $newl $dlyfile)
 if ($x.length -eq 0)
 {
     add-content $dlyfile $newl
-    scp "$dlyfile" "ukmonhelper:prod/data/dailyreports/" 
+    scp "$dlyfile" "ukmonhelper2:prod/data/dailyreports/" 
 }
 
 # now invoke the script to build the index page and update the daily index.
 $cmd="/home/ec2-user/prod/website/updateIndexPages.sh /home/ec2-user/prod/data/dailyreports/$dlyfile"
-ssh ukmonhelper "$cmd"
+ssh ukmonhelper2 "$cmd"
 $cmd="/home/ec2-user/prod/analysis/consolidateOutput.sh ${yr}"
-ssh ukmonhelper "$cmd"
+ssh ukmonhelper2 "$cmd"
 $cmd="/home/ec2-user/prod/website/createFireballPage.sh ${yr}"
-ssh ukmonhelper "$cmd"
+ssh ukmonhelper2 "$cmd"
 set-location $loc

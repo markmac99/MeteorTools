@@ -42,7 +42,7 @@ if ($solver -eq 'E') {
 else {
     python -m wmpl.Trajectory.CorrelateRMS . -l 
 }
-$pickfile=(Get-ChildItem *.pickle -r).fullname
+$pickfile=(Get-ChildItem *.pickle -r  -exclude *_mc_*).fullname 
 python -m wmpl.Utils.DynamicMassFit $pickfile -4 -1 --ga 0.65
 set-location $loc
 conda deactivate
