@@ -80,14 +80,6 @@ aws s3 sync "$srcpath" "s3://$targ" --include "*" --exclude "*.jpg" --exclude "*
 $targ="ukmda-website/reports/$yr/orbits/$ym/$yd/$newname"
 aws s3 sync "$srcpath" "s3://$targ" --include "*" --exclude "*.jpg" --exclude "*.mp4" --profile ukmda_admin
 
-# push the pickle and report to ukmon-shared
-$targ="ukmda-shared/matches/RMSCorrelate/trajectories/$yr/$ym/$yd/$newname"
-$pickle=(get-item "$srcpath/*.pickle").name
-aws s3 cp "$srcpath/$pickle" "s3://$targ/" --profile $awsprofile
-$repfile=(get-item "$srcpath/*report.txt").name
-aws s3 cp "$srcpath/$repfile" "s3://$targ/" --profile ukmda_admin
-
-
 # push the jpgs and mp4s to the website
 $targ="ukmeteornetworkarchive/img/single/$yr/$ym/"
 aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.jpg" --profile $awsprofile
@@ -97,6 +89,20 @@ $targ="ukmda-website/img/single/$yr/$ym/"
 aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.jpg" --profile ukmda_admin
 $targ="ukmda-website/img/mp4/$yr/$ym/"
 aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.mp4" --profile ukmda_admin
+
+# push the pickle and report to ukmon-shared
+$targ="ukmda-shared/matches/RMSCorrelate/trajectories/$yr/$ym/$yd/$newname"
+$pickle=(get-item "$srcpath/*.pickle").name
+aws s3 cp "$srcpath/$pickle" "s3://$targ/" --profile ukmda_admin
+$repfile=(get-item "$srcpath/*report.txt").name
+aws s3 cp "$srcpath/$repfile" "s3://$targ/" --profile ukmda_admin
+
+$targ="ukmon-shared/matches/RMSCorrelate/trajectories/$yr/$ym/$yd/$newname"
+$pickle=(get-item "$srcpath/*.pickle").name
+aws s3 cp "$srcpath/$pickle" "s3://$targ/" --profile $awsprofile
+$repfile=(get-item "$srcpath/*report.txt").name
+aws s3 cp "$srcpath/$repfile" "s3://$targ/" --profile $awsprofile
+
 
 # add row to dailyreport file
 $pf=(Get-ChildItem "$srcpath/*.pickle").fullname
