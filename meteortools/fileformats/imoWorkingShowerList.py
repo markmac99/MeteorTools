@@ -57,6 +57,8 @@ class IMOshowerList:
         for shower in self.showerlist:
             if shower['IAU_code'] == iaucode:
                 ds = shower
+        if ds['@id'] is None:
+            useFull = True 
         pksollong = -1
         subset = self.fullstreamdata[np.where(self.fullstreamdata[:,3]==iaucode)]
         if subset is not None:
