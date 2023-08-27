@@ -5,4 +5,4 @@ version = "2023.07.8"
 """
 .. include:: ./README.md
 """
-__version__ = "2023.08.3"
+__version__ = "2023.08.4"
