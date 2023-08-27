@@ -88,7 +88,7 @@ push = true
 
 [tool.bumpver.file_patterns]
 "pyproject.toml" = ['version = "{version}"',]
-"meteortools/__init__.py" = ['__version__ = "{version}"',]
+"meteortools/__init__.py" = ['version = "{version}"',]
 #"meteortools/README.md" = ["{version}",]
 
 [tool.pytest.ini_options]
