@@ -11,9 +11,8 @@ apiExampleCode  various examples of how to use the APIs
 """
 
 from .ECSVhandler import getECSVs
-from .apiExampleCode import matchApiCall, detailApiCall1, detailApiCall2, trajectoryAPI
-from .apiExampleCode import getMatchPickle, getLiveimageList, getFireballFiles
-from .getLiveImages import getLiveJpgs, getFBfiles, createTxtFile
+from .getMatches import getMatchesForDate, getDetailsOfMatch, getDetailOfMatchList
+from .getLiveImages import getLiveJpgs, getFBfiles, createTxtFile, getLiveimageList
 from .trajectoryKML import trajectoryKML
 from .trajPickle import getTrajPickle
 from .getDetections import getDetections

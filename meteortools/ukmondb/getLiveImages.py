@@ -42,6 +42,22 @@ def getLiveJpgs(dtstr, outdir=None, create_txt=False):
             print(f'{img.image_name} unavailable')
 
 
+def getLiveimageList(dtstr):
+    """ 
+    Get a list URLs of livestream images matching a pattern YYYYMMDD_HHMMSS.  
+    The seconds and minutes parts are optional but huge amounts of data may get returned.  
+
+    Note that we only keep the last month of images and so this function won't return
+    anything for older dates. 
+    Note also that the URLs are presigned and valid only for five minutes.  
+
+    Example pattern: '20230421_2122'
+    """
+    apiurl = 'https://api.ukmeteornetwork.co.uk/liveimages/getlive'
+    liveimgs = pd.read_json(f'{apiurl}?pattern={dtstr}')
+    return liveimgs
+
+
 def getFBfiles(patt, outdir=None):
     """
     Retrieve fireball files from the ukmon website that match a pattern  
@@ -66,7 +82,7 @@ def getFBfiles(patt, outdir=None):
     if outdir is None:
         outdir = patt[:6]
     os.makedirs(outdir, exist_ok=True)
-    apiurl = 'https://api.ukmeteornetwork.co.uk/fireballs/getfb'
+    apiurl = 'https://api.ukmeteornetwork.co.uk/fireballfiles'
     fbfiles = pd.read_json(f'{apiurl}?pattern={patt}')
     if len(fbfiles) == 0:
         print('no matching data found')

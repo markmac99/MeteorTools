@@ -13,11 +13,12 @@ except:
 from ..ukmondb.getLiveImages import _download
 
 
-def getTrajPickle(trajname):
+def getTrajPickle(trajname, outdir=None):
     """ Retrieve a the pickled trajectory for a matched detection 
     
     Arguments:  
         trajname:   [string] Name of the trajectory eg 20230502_025228.374_UK_BE
+        outdir:     [string] default None. Where to save the pickle. 
 
     Returns:
         WMPL traj object
@@ -30,17 +31,21 @@ def getTrajPickle(trajname):
     fmt = 'pickle'
     apicall = f'{apiurl}?reqval={trajname}&format={fmt}'
     matchpickle = pd.read_json(apicall, lines=True)
-    if 'url' in matchpickle:
+    if outdir is None:
         outdir = tempfile.mkdtemp()
+        saveme = False
+    else:
+        saveme = True
+    if 'url' in matchpickle:
         _download(matchpickle.url[0], outdir, matchpickle.filename[0])
-
         localfile = os.path.join(outdir, matchpickle.filename[0])
         with open(localfile, 'rb') as f:
             traj = pickle.load(f, encoding='latin1')
-        try:
-            os.remove(localfile)
-        except:
-            print(f'unable to remove {localfile}')
+        if saveme is False:
+            try:
+                os.remove(localfile)
+            except:
+                print(f'unable to remove {localfile}')
     else:
         traj = None
     return traj
