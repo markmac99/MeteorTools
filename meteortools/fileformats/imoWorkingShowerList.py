@@ -58,7 +58,7 @@ class IMOshowerList:
             if shower['IAU_code'] == iaucode:
                 ds = shower
         if ds['@id'] is None:
-            useFull = True 
+            ds['@id'] = -1
         pksollong = -1
         subset = self.fullstreamdata[np.where(self.fullstreamdata[:,3]==iaucode)]
         if subset is not None:
@@ -119,7 +119,11 @@ class IMOshowerList:
             now = datetime.datetime.strptime(str(currdt), '%Y%m%d')
             mth = now.month
             now = now.year
-        enddate = datetime.datetime.strptime(shower['end'], '%b %d')
+        #print(shower)
+        if shower['end'] is not None:
+            enddate = datetime.datetime.strptime(shower['end'], '%b %d')
+        else:
+            enddate = datetime.datetime.strptime(shower['peak'], '%b %d') + datetime.timedelta(days=3)
         if iaucode == 'QUA' and mth == 12:
             # quadrantids straddle yearend
             now = now + 1
@@ -170,7 +174,10 @@ class IMOshowerList:
         activelist = []
         for shower in self.showerlist:
             shwname = shower['IAU_code']
+            if shwname == 'ANT': #skip the anthelion source, its not a real shower
+                continue
             start = self.getStart(shwname, datetotest.strftime('%Y%m%d'))
+            #print(shwname, start,shower)
             end = self.getEnd(shwname, datetotest.strftime('%Y%m%d')) + datetime.timedelta(days=3)
             if datetotest > start and datetotest < end:
                 if majorOnly is False or (majorOnly is True and shwname in majorlist):

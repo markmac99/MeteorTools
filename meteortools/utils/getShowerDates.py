@@ -3,6 +3,8 @@
 # simple script to get the active shower list from the IMO working list
 
 import datetime
+import os
+import numpy as np
 
 from ..fileformats import imoWorkingShowerList as iwsl
 
@@ -49,3 +51,39 @@ def getShowerPeak(shwr):
     """
     _, _, _, pk = getShowerDets(shwr)
     return pk
+
+
+def numpifyShowerData():
+    """Refresh the numpy versions of the shower data files """
+    abs_path = os.getenv('WMPL_LOC', default='/home/ec2-user/src/WesternMeteorPyLib')
+    iau_shower_table_file = os.path.join(abs_path, 'wmpl', 'share', 'streamfulldata.csv')
+    iau_shower_table_npy = os.path.join(abs_path, 'wmpl', 'share', 'streamfulldata.npy')
+    iau_shower_list = np.loadtxt(iau_shower_table_file, delimiter="|", usecols=range(20), dtype=str)
+    np.save(iau_shower_table_npy, iau_shower_list)
+
+    gmn_shower_table_file = os.path.join(abs_path, 'wmpl', 'share', 'gmn_shower_table_20230518.txt')
+    gmn_shower_table_npy = os.path.join(abs_path, 'wmpl', 'share', 'gmn_shower_table_20230518.npy')
+    gmn_shower_list = _loadGMNShowerTable(*os.path.split(gmn_shower_table_file))
+    np.save(gmn_shower_table_npy, gmn_shower_list)
+
+
+def _loadGMNShowerTable(dir_path, file_name):
+    gmn_shower_list = []
+    with open(os.path.join(dir_path, file_name), encoding='cp1252') as f:
+        for line in f:
+            if line.startswith('#'):
+                continue
+            line = line.strip()
+            line = line.replace('\n', '').replace('\r', '')
+            if not line:
+                continue
+            la_sun, L_g, B_g, v_g, dispersion, IAU_no, IAU_code = line.split()
+            gmn_shower_list.append([
+                np.radians(float(la_sun)), 
+                np.radians(float(L_g)),
+                np.radians(float(B_g)), 
+                1000*float(v_g), 
+                np.radians(float(dispersion)), 
+                int(IAU_no)]
+            )
+    return np.array(gmn_shower_list)

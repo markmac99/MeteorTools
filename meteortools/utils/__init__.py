@@ -26,7 +26,7 @@ from .Math import altAz2RADec_vect, raDec2AltAz_vect, equatorialCoordPrecession_
 from .annotateImage import annotateImage, annotateImageArbitrary
 from .convertSolLon import sollon2jd
 from .getActiveShowers import getActiveShowers, getActiveShowersStr
-from .getShowerDates import getShowerDets, getShowerPeak
+from .getShowerDates import getShowerDets, getShowerPeak, numpifyShowerData
 from .sendAnEmail import sendAnEmail, forwardAnEmail
 from .drawFTPfile import drawFTPFile
 from .plotTrack import trackToDistvsHeight, trackToTimevsVelocity, trackToTimevsHeight
