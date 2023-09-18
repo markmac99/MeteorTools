@@ -81,10 +81,11 @@ $targ="ukmda-website/reports/$yr/orbits/$ym/$yd/$newname"
 aws s3 sync "$srcpath" "s3://$targ" --include "*" --exclude "*.jpg" --exclude "*.mp4" --profile ukmda_admin
 
 # push the jpgs and mp4s to the website
-$targ="ukmeteornetworkarchive/img/single/$yr/$ym/"
-aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.jpg" --profile $awsprofile
-$targ="ukmeteornetworkarchive/img/mp4/$yr/$ym/"
-aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.mp4" --profile $awsprofile
+# don't need to push to ukmonshared as the bucket triggers will do that 
+#$targ="ukmeteornetworkarchive/img/single/$yr/$ym/"
+#aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.jpg" --profile $awsprofile
+#$targ="ukmeteornetworkarchive/img/mp4/$yr/$ym/"
+#aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.mp4" --profile $awsprofile
 $targ="ukmda-website/img/single/$yr/$ym/"
 aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.jpg" --profile ukmda_admin
 $targ="ukmda-website/img/mp4/$yr/$ym/"
