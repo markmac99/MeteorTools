@@ -24,7 +24,7 @@ def getLiveJpgs(dtstr, outdir=None, create_txt=False):
         outdir = dtstr
     os.makedirs(outdir, exist_ok=True)
 
-    apiurl = 'https://api.ukmeteornetwork.co.uk/liveimages/getlive'
+    apiurl = 'https://api.ukmeteors.co.uk/liveimages/getlive'
     liveimgs = pd.read_json(f'{apiurl}?pattern={dtstr}')
 
     weburl = 'https://live.ukmeteornetwork.co.uk/'
@@ -53,7 +53,7 @@ def getLiveimageList(dtstr):
 
     Example pattern: '20230421_2122'
     """
-    apiurl = 'https://api.ukmeteornetwork.co.uk/liveimages/getlive'
+    apiurl = 'https://api.ukmeteors.co.uk/liveimages/getlive'
     liveimgs = pd.read_json(f'{apiurl}?pattern={dtstr}')
     return liveimgs
 
@@ -82,7 +82,7 @@ def getFBfiles(patt, outdir=None):
     if outdir is None:
         outdir = patt[:6]
     os.makedirs(outdir, exist_ok=True)
-    apiurl = 'https://api.ukmeteornetwork.co.uk/fireballfiles'
+    apiurl = 'https://api.ukmeteors.co.uk/fireballfiles'
     fbfiles = pd.read_json(f'{apiurl}?pattern={patt}')
     if len(fbfiles) == 0:
         print('no matching data found')
