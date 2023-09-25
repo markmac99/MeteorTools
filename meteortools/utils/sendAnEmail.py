@@ -98,7 +98,11 @@ def sendAnEmail(mailrecip, message, subject, mailfrom, files=None, tokfile=None,
             message:    [string] the message to send.  
             subject:    [string] Subject line.
             mailfrom:   [string] email address of sender.   
+        Keyword Args:
             files:      [list]   list of files to attach, not currently implemented.  
+            tokfile:    [string] full path to token file, if not ~/.ssh/gmailtoken.json  
+            crdfile:    [string] full path to credentials file, if not ~/.ssh/gmailcreds.json  
+            msg_html:   [string] HTML version of the message body, if any  
 
         Returns:  
             Nothing, though a message is printed onscreen.  
