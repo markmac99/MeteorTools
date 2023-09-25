@@ -3,7 +3,8 @@ import os
 import platform
 import base64
 import email
-from email.mime.text import MIMEText, MIMEMultipart
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
