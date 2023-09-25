@@ -3,7 +3,7 @@ import os
 import platform
 import base64
 import email
-from email.mime.text import MIMEText
+from email.mime.text import MIMEText, MIMEMultipart
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -74,8 +74,14 @@ def _refreshCreds(tokfile=None, crdfile=None):
     return creds
 
 
-def _create_message(sender, to, subject, message_text):
-    msg = MIMEText(message_text)
+def _create_message(sender, to, subject, message_text, msg_text_html=None):
+
+    if msg_text_html is None:
+        msg = MIMEText(message_text)
+    else:
+        msg = MIMEMultipart('alternative')
+        msg.attach(MIMEText(message_text, 'plain'))
+        msg.attach(MIMEText(msg_text_html, 'html')) # html must be the last part
     msg['to'] = to
     msg['from'] = sender
     msg['subject'] = subject
@@ -83,13 +89,13 @@ def _create_message(sender, to, subject, message_text):
 
 
 
-def sendAnEmail(mailrecip, message, msgtype, mailfrom, files=None, tokfile=None, crdfile=None):
+def sendAnEmail(mailrecip, message, subject, mailfrom, files=None, tokfile=None, crdfile=None, msg_html=None):
     """ sends an email using gmail. 
     
         Arguments:  
             mailrecip:  [string] email address of recipient.  
             message:    [string] the message to send.  
-            msgtype:    [string] Prefix for the subject line, eg Test, Warning.  
+            subject:    [string] Subject line.
             mailfrom:   [string] email address of sender.   
             files:      [list]   list of files to attach, not currently implemented.  
 
@@ -101,8 +107,8 @@ def sendAnEmail(mailrecip, message, msgtype, mailfrom, files=None, tokfile=None,
             gmailcreds.json in the  $HOME/.ssh folder.  
         """
     
-    if msgtype is None:
-        msgtype = platform.uname()[1]
+    if subject is None:
+        subject = platform.uname()[1]
 
     # email a summary to the mailrecip
     creds = _getGmailCreds(tokfile, crdfile)
@@ -110,10 +116,10 @@ def sendAnEmail(mailrecip, message, msgtype, mailfrom, files=None, tokfile=None,
         return 
     service = build('gmail', 'v1', credentials=creds)
 
-    subj ='{:s}: {:s}'.format(msgtype, message[:30])
-    message = '{:s}: {:s}'.format(msgtype, message)
+    #message = '{:s}: {:s}'.format(msgtype, message)
 
-    mailmsg = _create_message(mailfrom, mailrecip, subj, message)
+    subj = subject
+    mailmsg = _create_message(mailfrom, mailrecip, subj, message, msg_text_html=msg_html)
 
     try:
         retval = (service.users().messages().send(userId='me', body=mailmsg).execute())
