@@ -114,7 +114,10 @@ class IMOshowerList:
             now = datetime.datetime.strptime(str(currdt), '%Y%m%d')
             mth = now.month
             now = now.year
-        startdate = datetime.datetime.strptime(shower['start'], '%b %d')
+        if shower['start'] is not None:
+            startdate = datetime.datetime.strptime(shower['start'], '%b %d')
+        else:
+            startdate = datetime.datetime.strptime(shower['peak'], '%b %d') + datetime.timedelta(days=-3)
         if iaucode == 'QUA' and mth !=12:
             # quadrantids straddle yearend
             now = now - 1
