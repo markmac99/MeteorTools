@@ -59,8 +59,10 @@ if ($jpgs -is [array]) {
         write-output $li  | out-file $srcpath/extrajpgs.html -append
     }
 } else {
-    $li = "<a href=""/img/single/${yr}/${ym}/${jpgs}""><img src=""/img/single/${yr}/${ym}/${jpgs}"" width=""20%""></a>"
-    write-output $li  | out-file $srcpath/extrajpgs.html -append
+    if (${jpgs}.length > 0) {
+        $li = "<a href=""/img/single/${yr}/${ym}/${jpgs}""><img src=""/img/single/${yr}/${ym}/${jpgs}"" width=""20%""></a>"
+        write-output $li  | out-file $srcpath/extrajpgs.html -append
+    }
 }
 out-file -filepath $srcpath/extrampgs.html
 $jpgs=(get-item $fbfldr/$fbdate/*.mp4).name
@@ -70,8 +72,24 @@ if ($jpgs -is [array]) {
         write-output $li  | out-file $srcpath/extrampgs.html -append
     }
 } else {
-    $li = "<a href=""/img/mp4/${yr}/${ym}/${jpgs}""><video width=""20%""><source src=""/img/mp4/${yr}/${ym}/${jpgs}"" width=""20%"" type=""video/mp4""></video></a>"
-    write-output $li  | out-file $srcpath/extrampgs.html -append
+    if(${jpgs}.length > 0) {
+        $li = "<a href=""/img/mp4/${yr}/${ym}/${jpgs}""><video width=""20%""><source src=""/img/mp4/${yr}/${ym}/${jpgs}"" width=""20%"" type=""video/mp4""></video></a>"
+        write-output $li  | out-file $srcpath/extrampgs.html -append
+    }
+}
+out-file -filepath $srcpath/extrajpgs.txt
+$targ="ukmda-website/img/single/$yr/$ym/"
+$jpgs=(get-item $fbfldr/$fbdate/jpgs/*.jpg).name
+if ($jpgs -is [array]) {
+    foreach ($jpg in $jpgs){
+        write-output $jpg  | out-file $srcpath/extrajpgs.txt -append
+        aws s3 cp "$fbfldr/$fbdate/jpgs/$jpg" "s3://${targ}" --profile ukmda_admin
+    }
+} else {
+    if(${jpgs}.length > 0) {
+        write-output $jpgs  | out-file $srcpath/extrajpgs.txt -append
+        aws s3 cp "$fbfldr/$fbdate/jpgs/$jpgs" "s3://${targ}" --profile ukmda_admin
+    }
 }
 
 # copy the trajectory solution over
@@ -82,14 +100,41 @@ aws s3 sync "$srcpath" "s3://$targ" --include "*" --exclude "*.jpg" --exclude "*
 
 # push the jpgs and mp4s to the website
 # don't need to push to ukmonshared as the bucket triggers will do that 
-#$targ="ukmeteornetworkarchive/img/single/$yr/$ym/"
-#aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.jpg" --profile $awsprofile
-#$targ="ukmeteornetworkarchive/img/mp4/$yr/$ym/"
-#aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.mp4" --profile $awsprofile
 $targ="ukmda-website/img/single/$yr/$ym/"
-aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.jpg" --profile ukmda_admin
+$jpgs=(get-item $fbfldr/$fbdate/*.jpg).name
+if ($jpgs -is [array]) {
+    foreach ($jpg in $jpgs){
+        aws s3 cp "$fbfldr/$fbdate/$jpg" "s3://${targ}" --profile ukmda_admin
+    }
+} else {
+    if(${jpgs}.length > 0) {
+        aws s3 cp "$fbfldr/$fbdate/$jpgs" "s3://${targ}" --profile ukmda_admin
+    }
+}
+
 $targ="ukmda-website/img/mp4/$yr/$ym/"
-aws s3 sync "$fbfldr/$fbdate" "s3://$targ" --exclude "*" --include "*.mp4" --profile ukmda_admin
+$mp4s=(get-item $fbfldr/$fbdate/*.mp4).name
+if ($mp4s -is [array]) {
+    foreach ($mp4 in $mp4s){
+        aws s3 cp "$fbfldr/$fbdate/$mp4" "s3://${targ}" --profile ukmda_admin
+    }
+} else {
+    if(${mp4s}.length > 0) {
+        aws s3 cp "$fbfldr/$fbdate/$mp4s" "s3://${targ}" --profile ukmda_admin
+    }
+}
+$mp4s=(get-item $fbfldr/$fbdate/mp4s/*.mp4).name
+if ($mp4s -is [array]) {
+    foreach ($mp4 in $mp4s){
+        $nn = $mp4.replace('_line_00.mp4', '.mp4')
+        aws s3 cp "$fbfldr/$fbdate/mp4s/$mp4" "s3://${targ}${nn}" --profile ukmda_admin
+    }
+} else {
+    if(${mp4s}.length > 0) {
+        $nn = $mp4s.replace('_line_00.mp4', '.mp4')
+        aws s3 cp "$fbfldr/$fbdate/mp4s/$mp4s" "s3://${targ}" --profile ukmda_admin
+    }
+}
 
 # push the pickle and report to ukmon-shared
 $targ="ukmda-shared/matches/RMSCorrelate/trajectories/$yr/$ym/$yd/$newname"
