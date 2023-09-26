@@ -9,7 +9,10 @@ import configparser as crp
 import json
 import datetime
 
-from ..utils import date2JD, angleBetweenSphericalCoords
+try:
+    from ..utils import date2JD, angleBetweenSphericalCoords
+except Exception:
+    from meteortools.utils import date2JD, angleBetweenSphericalCoords
 
 
 def filterFTPforSpecificTime(ftpfile, dtstr):

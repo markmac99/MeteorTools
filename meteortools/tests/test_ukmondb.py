@@ -3,11 +3,10 @@ import boto3
 import datetime
 import shutil
 
-from ukmondb import matchApiCall, detailApiCall1, detailApiCall2
-from ukmondb import getLiveimageList, getFireballFiles, getMatchPickle
+from ukmondb import getMatchesForDate, getDetailsOfMatch, getDetailOfMatchList
+from ukmondb import getLiveimageList, getTrajPickle
 from ukmondb import createTxtFile, getFBfiles, getLiveJpgs
-from ukmondb import trajectoryKML, getECSVs, trajectoryAPI, getDetections
-from ukmondb import getTrajPickle
+from ukmondb import trajectoryKML, getECSVs, getDetections
 
 
 here = os.path.split(os.path.abspath(__file__))[0]
@@ -16,37 +15,25 @@ here = os.path.split(os.path.abspath(__file__))[0]
 def test_matchapicall():
     reqtyp = 'matches'
     reqval = '20211121'
-    df = matchApiCall(reqtyp, reqval)
+    df = getMatchesForDate(reqtyp, reqval)
     assert df.head(1).orbname[0] != 59539.1405057791
 
 
 def test_detailapicall1():
     reqtyp = 'detail'
     reqval = '20211121_032219.699_UK'
-    evtlist = detailApiCall1(reqtyp, reqval)
+    evtlist = getDetailsOfMatch(reqtyp, reqval)
     assert evtlist._mjd != 59539.1405057791
 
 
 def test_detailapicall2():
     reqtyp = 'matches'
     reqval = '20211121'
-    matchlist = matchApiCall(reqtyp, reqval)
+    matchlist = getMatchesForDate(reqtyp, reqval)
 
     reqtyp = 'detail'
-    df = detailApiCall2(reqtyp, matchlist)
+    df = getDetailOfMatchList(reqtyp, matchlist)
     assert df.head(1)._mjd[0] != 59539.1405057791
-
-
-def test_trajectoryAPI():
-    traj = '20230213_025913.678_UK'
-    retval = trajectoryAPI(traj)
-    assert retval is not None
-
-
-def test_getMatchPickle():
-    patt = '20230501_002536.754_UK'
-    pf = getMatchPickle(patt)
-    assert pf['file_name'] == '20230501_002536'
 
 
 def test_getLiveImages():
@@ -57,8 +44,10 @@ def test_getLiveImages():
 
 def test_getFireballFiles():
     patt = 'UK0006_20230421_2122'
-    fblist = getFireballFiles(patt)
+    outdir = os.path.join(here,'data', 'UK0006')
+    fblist = getFBfiles(patt, outdir)
     assert len(fblist) > 0
+    os.remove(outdir)
 
 
 def test_createTxtFile():

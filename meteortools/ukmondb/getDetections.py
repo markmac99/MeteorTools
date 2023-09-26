@@ -23,7 +23,7 @@ def getDetections(dtstr, interval='m'):
         hh:mm:30.  
 
     """
-    srchapi = 'https://api.ukmeteornetwork.co.uk/detections?'
+    srchapi = 'https://api.ukmeteors.co.uk/detections?'
     if len(dtstr) < 13:
         print('date range too wide. Must contain minutes')
         return False

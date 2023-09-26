@@ -19,7 +19,7 @@ def getMatchesForDate(dtstr):
         list of matches for that date
 
     """
-    apiurl = 'https://api.ukmeteornetwork.co.uk/matches'
+    apiurl = 'https://api.ukmeteors.co.uk/matches'
     apicall = f'{apiurl}?reqtyp=matches&reqval={dtstr}'
     matchlist = pd.read_json(apicall, lines=True)
     return matchlist
@@ -35,7 +35,7 @@ def getDetailsOfMatch(eventstr):
         pandas series containing the event details
 
     """
-    apiurl = 'https://api.ukmeteornetwork.co.uk/matches'
+    apiurl = 'https://api.ukmeteors.co.uk/matches'
     apicall = f'{apiurl}?reqtyp=detail&reqval={eventstr}'
     evtdetail = pd.read_json(apicall, typ='series')
     return evtdetail
@@ -52,7 +52,7 @@ def getDetailOfMatchList(matchlist):
         pandas dataframe containing the event details
 
     """
-    apiurl = 'https://api.ukmeteornetwork.co.uk/matches'
+    apiurl = 'https://api.ukmeteors.co.uk/matches'
     details = []
     for id in matchlist.orbname:
         reqval = id

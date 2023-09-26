@@ -5,7 +5,10 @@ import xmltodict
 import datetime
 import math
 import numpy
-from ..utils import datetime2JD, altAz2RADec
+try:
+    from ..utils import datetime2JD, altAz2RADec
+except Exception:
+    from meteortools.utils import datetime2JD, altAz2RADec
 
 
 class UAXml:

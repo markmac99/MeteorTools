@@ -10,7 +10,10 @@ try:
 except:
     print('WMPL not available')
 
-from ..ukmondb.getLiveImages import _download
+try:
+    from ..ukmondb.getLiveImages import _download
+except Exception:
+    from meteortools.ukmondb.getLiveImages import _download
 
 
 def getTrajPickle(trajname, outdir=None):

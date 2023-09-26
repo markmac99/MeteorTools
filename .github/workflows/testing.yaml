@@ -3,12 +3,15 @@ name: automated_testing
 on:
   push:
     branches:
-      - dev
+      - main
 jobs:
   apitests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+      - run: pip install -e .
       - run: chmod +x ./meteortools/tests/*.sh
       - run: ./meteortools/tests/runTests.sh
-      

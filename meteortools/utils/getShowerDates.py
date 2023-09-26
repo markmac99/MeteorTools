@@ -6,7 +6,10 @@ import datetime
 import os
 import numpy as np
 
-from ..fileformats import imoWorkingShowerList as iwsl
+try:
+    from ..fileformats import imoWorkingShowerList as iwsl
+except Exception:
+    from meteortools.fileformats import imoWorkingShowerList as iwsl
 
 
 def getShowerDets(shwr, stringFmt=False, dataPth=None):

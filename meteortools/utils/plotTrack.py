@@ -4,7 +4,10 @@ import csv
 from matplotlib import pyplot as plt
 import numpy as np
 
-from ..utils import greatCircleDistance
+try:
+    from ..utils import greatCircleDistance
+except Exception:
+    from meteortools.utils import greatCircleDistance
 
 
 def trackToDistvsHeight(trackcsvfile):

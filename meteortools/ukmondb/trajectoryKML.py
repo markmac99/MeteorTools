@@ -5,7 +5,10 @@ import json
 import os 
 import pandas as pd
 
-from ..fileformats import trackCsvtoKML
+try:
+    from ..fileformats import trackCsvtoKML
+except Exception:
+    from meteortools.fileformats import trackCsvtoKML
 
 
 def trajectoryKML(trajname, outdir=None):

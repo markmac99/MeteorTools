@@ -17,7 +17,7 @@ def getECSVs(stationID, dateStr, savefiles=False, outdir='.'):
         saveFiles:  [bool] save to file, or print to screen. Default False  
         outdir:     [str] path to save files into. Default '.'  
     """
-    apiurl='https://api.ukmeteornetwork.co.uk/getecsv?stat={}&dt={}'
+    apiurl='https://api.ukmeteors.co.uk/getecsv?stat={}&dt={}'
     res = requests.get(apiurl.format(stationID, dateStr))
     ecsvlines=''
     if res.status_code == 200:

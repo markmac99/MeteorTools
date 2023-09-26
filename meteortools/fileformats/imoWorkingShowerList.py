@@ -7,13 +7,17 @@ import xmltodict
 import datetime
 import os
 import numpy as np
-from ..utils import jd2Date, sollon2jd
 import copy
 
+try:
+    from ..utils import jd2Date, sollon2jd
+except Exception:
+    from meteortools.utils import jd2Date, sollon2jd
+    
 # imported from $SRC/share
 try:
     from majorminor import majorlist, minorlist
-except:
+except Exception:
     majorlist = ['QUA', 'LYR', 'ETA', 'CAP', 'SDA', 'PER', 'AUR', 'ORI', 'NTA', 'STA', 'LEO', 'GEM', 'URS']
     minorlist = ['SPE','OCT','DRA','EGE','MON','HYD','COM','NOO']
 
@@ -60,6 +64,7 @@ class IMOshowerList:
         if ds['@id'] is None:
             ds['@id'] = -1
         pksollong = -1
+        #print(ds)
         subset = self.fullstreamdata[np.where(self.fullstreamdata[:,3]==iaucode)]
         if subset is not None:
             mtch = [sh for sh in subset if int(sh[6]) > -1]
@@ -83,10 +88,14 @@ class IMOshowerList:
                 ds2['start'] = (pkdt + datetime.timedelta(days=-2)).strftime('%h %d')
                 ds2['end'] = (pkdt + datetime.timedelta(days=2)).strftime('%h %d')
                 ds2['pksollon'] = pksollong
-        #print(ds)
-        #print(ds2)
+                #print(ds2)
+            else:
+                print('no match in the full stream database')
         if useFull is False:
-            ds['pksollon'] = pksollong
+            if ds['pksollon'] is None:
+                ds['pksollon'] = ds2['pksollon']
+            if ds['peak'] is None:
+                ds['peak'] = ds2['peak']
             ds['@id'] = ds2['@id']
             return ds
         else:

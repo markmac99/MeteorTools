@@ -2,7 +2,11 @@
 #
 # simple script to get the active shower list from the IMO working list
 
-from ..fileformats import imoWorkingShowerList as iwsl
+try:
+    from ..fileformats import imoWorkingShowerList as iwsl
+except Exception:
+    from meteortools.fileformats import imoWorkingShowerList as iwsl
+
 import datetime
 
 

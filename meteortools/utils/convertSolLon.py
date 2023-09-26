@@ -1,7 +1,10 @@
 # Copyright (C) 2018-2023 Mark McIntyre
 #
 import numpy as np
-from ..utils import date2JD
+try:
+    from ..utils import date2JD
+except Exception:
+    from meteortools.utils import date2JD
 
 
 def sollon2jd(Year, Month, Long):
