@@ -13,7 +13,7 @@ try:
     from ..utils import jd2Date, sollon2jd
 except Exception:
     from meteortools.utils import jd2Date, sollon2jd
-    
+
 # imported from $SRC/share
 try:
     from majorminor import majorlist, minorlist
@@ -92,7 +92,9 @@ class IMOshowerList:
             else:
                 print('no match in the full stream database')
         if useFull is False:
-            if ds['pksollon'] is None:
+            if 'pksollon' not in ds:
+                ds['pksollon'] = ds2['pksollon']
+            elif ds['pksollon'] is None:
                 ds['pksollon'] = ds2['pksollon']
             if ds['peak'] is None:
                 ds['peak'] = ds2['peak']
