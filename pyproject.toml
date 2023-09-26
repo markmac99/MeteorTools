@@ -8,7 +8,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "MeteorTools"
-version = "2023.09.2"
+version = "2023.09.3"
 description = "Python Tools for Meteor Data Analysis"
 readme = "meteortools/README.md"
 authors = [{ name = "Mark McIntyre", email = "markmcintyre99@googlemail.com" }]
@@ -79,7 +79,7 @@ packages = ["meteortools.utils", "meteortools.ukmondb",
 "*" = ["*.npy", "*.xml"]
 
 [tool.bumpver]
-current_version = "2023.09.2"
+current_version = "2023.09.3"
 version_pattern = "YYYY.0M.PATCH"
 commit_message = "bump version {old_version} -> {new_version}"
 commit = true
