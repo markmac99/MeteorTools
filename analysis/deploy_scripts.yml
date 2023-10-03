@@ -15,6 +15,7 @@
     delegate_to: localhost
     with_items:
     #- {src: '{{srcdir}}/ukmon_pylib/', dest: '{{destdir}}/ukmon_pylib/', mode: '644', backup: no, directory_mode: yes }
+    - {src: '{{srcdir}}/analysis/syncFireballData.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/multiTrackStack.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/refreshLocalCopy.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/allCameraRadiantMap.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
