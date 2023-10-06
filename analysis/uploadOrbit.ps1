@@ -59,7 +59,7 @@ if ($jpgs -is [array]) {
         write-output $li  | out-file $srcpath/extrajpgs.html -append
     }
 } else {
-    if (${jpgs}.length > 0) {
+    if (${jpgs}.length -gt 0) {
         $li = "<a href=""/img/single/${yr}/${ym}/${jpgs}""><img src=""/img/single/${yr}/${ym}/${jpgs}"" width=""20%""></a>"
         write-output $li  | out-file $srcpath/extrajpgs.html -append
     }
@@ -72,7 +72,7 @@ if ($jpgs -is [array]) {
         write-output $li  | out-file $srcpath/extrampgs.html -append
     }
 } else {
-    if(${jpgs}.length > 0) {
+    if(${jpgs}.length -gt 0) {
         $li = "<a href=""/img/mp4/${yr}/${ym}/${jpgs}""><video width=""20%""><source src=""/img/mp4/${yr}/${ym}/${jpgs}"" width=""20%"" type=""video/mp4""></video></a>"
         write-output $li  | out-file $srcpath/extrampgs.html -append
     }
@@ -86,7 +86,7 @@ if ($jpgs -is [array]) {
         aws s3 cp "$fbfldr/$fbdate/jpgs/$jpg" "s3://${targ}" --profile ukmda_admin
     }
 } else {
-    if(${jpgs}.length > 0) {
+    if(${jpgs}.length -gt 0) {
         write-output $jpgs  | out-file $srcpath/extrajpgs.txt -append
         aws s3 cp "$fbfldr/$fbdate/jpgs/$jpgs" "s3://${targ}" --profile ukmda_admin
     }
@@ -107,7 +107,7 @@ if ($jpgs -is [array]) {
         aws s3 cp "$fbfldr/$fbdate/$jpg" "s3://${targ}" --profile ukmda_admin
     }
 } else {
-    if(${jpgs}.length > 0) {
+    if(${jpgs}.length -gt 0) {
         aws s3 cp "$fbfldr/$fbdate/$jpgs" "s3://${targ}" --profile ukmda_admin
     }
 }
@@ -119,7 +119,7 @@ if ($mp4s -is [array]) {
         aws s3 cp "$fbfldr/$fbdate/$mp4" "s3://${targ}" --profile ukmda_admin
     }
 } else {
-    if(${mp4s}.length > 0) {
+    if(${mp4s}.length -gt 0) {
         aws s3 cp "$fbfldr/$fbdate/$mp4s" "s3://${targ}" --profile ukmda_admin
     }
 }
@@ -130,7 +130,7 @@ if ($mp4s -is [array]) {
         aws s3 cp "$fbfldr/$fbdate/mp4s/$mp4" "s3://${targ}${nn}" --profile ukmda_admin
     }
 } else {
-    if(${mp4s}.length > 0) {
+    if(${mp4s}.length -gt 0) {
         $nn = $mp4s.replace('_line_00.mp4', '.mp4')
         aws s3 cp "$fbfldr/$fbdate/mp4s/$mp4s" "s3://${targ}" --profile ukmda_admin
     }
