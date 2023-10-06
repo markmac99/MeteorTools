@@ -43,6 +43,6 @@ else {
     python -m wmpl.Trajectory.CorrelateRMS . -l 
 }
 $pickfile=(Get-ChildItem *.pickle -r  -exclude *_mc_*).fullname 
-python -m wmpl.Utils.DynamicMassFit $pickfile -4 -1 --ga 0.65
+python -m wmpl.Utils.DynamicMassFit $pickfile -4 -1 --ga 0.65 > .\DynamicMassFit.txt
 set-location $loc
 conda deactivate
