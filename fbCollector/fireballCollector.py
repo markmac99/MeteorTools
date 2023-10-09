@@ -10,6 +10,8 @@ import logging.handlers
 import datetime
 import configparser
 import shutil
+import platform
+import subprocess
 
 import boto3
 import paramiko
@@ -24,7 +26,7 @@ from tkinter.ttk import Label, Style, LabelFrame, Scrollbar
 from PIL import Image as img
 from PIL import ImageTk
 
-from meteortools.ukmondb import getFBfiles, getLiveJpgs, createTxtFile
+from meteortools.ukmondb import getLiveJpgs, createTxtFile
 
 
 config_file = ''
@@ -120,16 +122,18 @@ class fbCollector(Frame):
         self.gmn_user = ''
         self.gmn_server = ''
         self.wmpl_loc = ''
-        self.wmpl_env= ''
+        self.wmpl_env = ''
         self.rms_loc = ''
-        self.rms_env= ''
-        self.selected={}
+        self.rms_env = ''
+        self.selected = {}
+        self.evtMonTriggered = None
+        self.review_stack = False
 
         self.readConfig()
 
         self.patt = patt
         if patt is None:
-            self.dir_path = None
+            self.dir_path = self.fb_dir
         else:
             self.dir_path = os.path.join(self.fb_dir, patt)
         log.info(f"Fireball folder is {self.fb_dir}")
@@ -214,11 +218,20 @@ class fbCollector(Frame):
         fileMenu = Menu(self.menuBar, tearoff=0)
         fileMenu.add_command(label="Load Folder", command=self.loadFolder)
         fileMenu.add_command(label="Delete Folder", command=self.delFolder)
-        if self.gmn_key != '': 
-            fileMenu.add_command(label="Fetch from GMN", command=self.getGMNData)
-        fileMenu.add_command(label="Fetch from UKMON", command=self.getUKMData)
+        fileMenu.add_separator()
+        fileMenu.add_command(label="Fetch GMN Data", command=self.getGMNData)
+        fileMenu.add_separator()
+        fileMenu.add_command(label="Update Watchlist", command=self.getWatchlist)
+        fileMenu.add_command(label="View Watchlist", command=self.viewWatchlist)
+        fileMenu.add_command(label="upload Watchlist", command=self.putWatchlist)
+        fileMenu.add_command(label="Fetch Event Data", command=self.getEventData)
+        fileMenu.add_separator()
         fileMenu.add_command(label="Exit", command=self.quitApplication)
         self.menuBar.add_cascade(label="File", underline=0, menu=fileMenu)
+
+        revMenu = Menu(self.menuBar, tearoff=0)
+        revMenu.add_command(label="Review Stacks", command=self.checkStacks)
+        self.menuBar.add_cascade(label="Review", underline=0, menu=revMenu)
 
         # buttons
         self.save_panel = LabelFrame(self, text=' Image Selection ')
@@ -276,7 +289,11 @@ class fbCollector(Frame):
             self.patt = thispatt
             self.newpatt.set(self.patt)
 
-        bin_list = [line for line in os.listdir(self.dir_path) if self.correct_datafile_name(line)]
+        if self.review_stack is False:
+            targdir = self.dir_path
+        else:
+            targdir = self.dir_path + '/stacks'
+        bin_list = [line for line in os.listdir(targdir) if self.correct_datafile_name(line)]
         return bin_list
 
     def update_listbox(self, bin_list):
@@ -290,8 +307,17 @@ class fbCollector(Frame):
             print(line, self.selected[line])
             if self.selected[line][0] == 1:
                 self.listbox.itemconfig(END, fg = 'green')
+
+    def checkStacks(self):
+        self.review_stack = True
+        bin_list = self.get_bin_list()
+        for b in bin_list:
+            self.selected[b] = (0, '')
+        self.update_listbox(bin_list)
+
     
     def loadFolder(self):
+        self.review_stack = False
         self.dir_path = None
         bin_list = self.get_bin_list()
         for b in bin_list:
@@ -303,17 +329,37 @@ class fbCollector(Frame):
         noimage = ImageTk.PhotoImage(noimgdata)
         self.imagelabel.configure(image = noimage)
         self.imagelabel.image = noimage
-        try:
-            shutil.rmtree(self.dir_path)
-            self.dir_path = self.fb_dir
-        except Exception as e:
-            print(f'unable to remove {self.dir_path}')
-            print(e)
+        if self.dir_path is not None and self.dir_path != self.fb_dir:
+            try:
+                shutil.rmtree(self.dir_path)
+                self.dir_path = self.fb_dir
+            except Exception as e:
+                print(f'unable to remove {self.dir_path}')
+                print(e)
 
     def correct_datafile_name(self, line):
         if '.jpg' in line and 'noimage' not in line:
             return True
         return False
+    
+    def removeRelated(self, imgname):
+        camid = imgname[:6]
+        mp4s = os.listdir(os.path.join(self.dir_path, 'mp4s'))
+        badones = [x for x in mp4s if camid in x]
+        for ba in badones:
+            os.remove(os.path.join(self.dir_path, 'mp4s', ba))
+        jpgs = os.listdir(os.path.join(self.dir_path, 'jpgs'))
+        badones = [x for x in jpgs if camid in x]
+        for ba in badones:
+            os.remove(os.path.join(self.dir_path, 'jpgs', ba))
+        fldrs = os.listdir(self.dir_path)
+        badones = [x for x in fldrs if camid in x]
+        for ba in badones:
+            try:
+                shutil.rmtree(os.path.join(self.dir_path, ba))
+            except Exception:
+                os.remove(os.path.join(self.dir_path, ba))
+        os.remove(os.path.join(self.dir_path, 'stacks', imgname))
 
     def remove_image(self):
         """ Remove the selected image from disk
@@ -324,8 +370,13 @@ class fbCollector(Frame):
         if not tkMessageBox.askyesno("Delete file", f"delete {current_image}?"):
             return
         log.info(f'removing {current_image}')
-        os.remove(os.path.join(self.dir_path, current_image))
-        self.selected[current_image] = (0,'')
+        if self.review_stack:
+            self.removeRelated(current_image)
+        else:
+            os.remove(os.path.join(self.dir_path, current_image))
+            xmlf = current_image.replace('P.jpg', '.xml')
+            os.remove(os.path.join(self.dir_path, xmlf))
+            self.selected[current_image] = (0,'')
         self.update_listbox(self.get_bin_list())
 
     def update_image(self, thing):
@@ -333,7 +384,10 @@ class fbCollector(Frame):
         """
         try:
             # Check if the list is empty. If it is, do nothing.
-            self.current_image = os.path.join(self.dir_path, self.listbox.get(self.listbox.curselection()[0]))
+            if self.review_stack:
+                self.current_image = os.path.join(self.dir_path, 'stacks', self.listbox.get(self.listbox.curselection()[0]))
+            else:
+                self.current_image = os.path.join(self.dir_path, self.listbox.get(self.listbox.curselection()[0]))
         except:
             return 0
         
@@ -362,27 +416,74 @@ class fbCollector(Frame):
 
     def get_data(self):
         thispatt = self.newpatt.get()
-        thispatt = thispatt[:14] # ignore seconds so that we don't miss data
+        thispatt = thispatt.strip()[:14] # ignore seconds so that we don't miss data
         self.patt = thispatt         
         self.dir_path = os.path.join(self.fb_dir, thispatt)
         log.info(f'getting data matching {thispatt}')
         getLiveJpgs(thispatt, outdir=self.dir_path)
         self.update_listbox(self.get_bin_list())
 
-    def getUKMData(self):
-        for s in self.selected:
-            if self.selected[s][0]==1:
-                txtf = self.selected[s][1]
-                camid,_ = os.path.splitext(txtf)
-                outdir = os.path.join(self.dir_path, camid.upper())
-                os.makedirs(outdir, exist_ok=True)
-                for li in open(txtf, 'r').readlines():
-                    patt = li.strip()
-                    if patt[:3]=='FF_':
-                        getFBfiles(patt[3:], outdir) 
-        tkMessageBox.showinfo("Data Collected", 'data collected from UKMON')
+    def viewWatchlist(self):
+        evtfile = os.path.join(self.fb_dir,'event_watchlist.txt')
+        if platform.system() == 'Darwin':       # macOS
+            procid = subprocess.Popen(('open', evtfile))
+        elif platform.system() == 'Windows':    # Windows
+            procid = subprocess.Popen(('cmd','/c',evtfile))
+        else:                                   # linux variants
+            procid = subprocess.Popen(('xdg-open', evtfile))
+        procid.wait()
+        if not tkMessageBox.askyesno("Upload File", "Upload event watchlist?"):
+            return
+        else:
+            self.putWatchlist()
+
+    def getWatchlist(self):
+        k = paramiko.RSAKey.from_private_key_file(os.path.expanduser(self.gmn_key))
+        c = paramiko.SSHClient()
+        server=self.gmn_server
+        user=self.gmn_user
+        log.info(f'trying {user}@{server} with {self.gmn_key}')
+        c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        c.connect(hostname = server, username = user, pkey = k)
+        scpcli = SCPClient(c.get_transport())
+        log.info('getting Watchlist')
+        scpcli.get('./event_watchlist.txt', self.fb_dir)
+        self.viewWatchlist()
+
+    def putWatchlist(self):
+        k = paramiko.RSAKey.from_private_key_file(os.path.expanduser(self.gmn_key))
+        c = paramiko.SSHClient()
+        server=self.gmn_server
+        user=self.gmn_user
+        log.info(f'trying {user}@{server} with {self.gmn_key}')
+        c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        c.connect(hostname = server, username = user, pkey = k)
+        scpcli = SCPClient(c.get_transport())
+        log.info('Uploading watchlist')
+        evtfile = os.path.join(self.fb_dir,'event_watchlist.txt')
+        scpcli.put(evtfile, 'event_watchlist.txt')
+        self.evtMonTriggered = datetime.datetime.now() + datetime.timedelta(minutes=31)
         return 
     
+    def getEventData(self):
+        if self.evtMonTriggered is None:
+            tkMessageBox.showinfo("Warning", 'Event Monitor has not been triggered')
+            return
+        if datetime.datetime.now() < self.evtMonTriggered:
+            tkMessageBox.showinfo("Warning", f'Wait till {self.evtMonTriggered.strftime("%H:%M:%S")}')
+            return
+        os.chdir(self.fb_dir)
+        evtdate = self.newpatt.get().strip()
+        if len(evtdate) < 15:
+            tkMessageBox.showinfo("Warning", f'Need seconds in the event date field {evtdate}')
+            return
+        cmd = f'../analysis/fbCollector/download_events.sh {evtdate} 1'
+        log.info(f'getting data for {evtdate}')
+        procid = subprocess.Popen(('bash','-c', cmd))
+        procid.wait()
+        tkMessageBox.showinfo("Info", 'Done')
+        return 
+
     def getGMNData(self):
         camlist = [line for line in os.listdir(self.dir_path) if self.correct_datafile_name(line)]
         dts=[]
@@ -409,6 +510,8 @@ class fbCollector(Frame):
         c.connect(hostname = server, username = user, pkey = k)
         command = f'source ~/anaconda3/etc/profile.d/conda.sh && conda activate wmpl && python scripts/extract_fireball.py {dtstr} {stationlist}'
         log.info(f'running {command}')
+        print(command)
+
         _, stdout, stderr = c.exec_command(command, timeout=900)
         for line in iter(stdout.readline, ""):
             print(line, end="")

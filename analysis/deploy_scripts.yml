@@ -14,7 +14,8 @@
     tags: [dev,prod]
     delegate_to: localhost
     with_items:
-    #- {src: '{{srcdir}}/ukmon_pylib/', dest: '{{destdir}}/ukmon_pylib/', mode: '644', backup: no, directory_mode: yes }
+    - {src: '{{srcdir}}/fbCollector/fireballCollector.py', dest: '{{destdir}}/fbCollector/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/fbCollector/download_events.sh', dest: '{{destdir}}/fbCollector/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/syncFireballData.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/multiTrackStack.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/refreshLocalCopy.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
@@ -32,8 +33,7 @@
     - {src: '{{srcdir}}/analysis/getVideoDataForYT.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/mp4retrConfig.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/getGMNData.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
-    - {src: '{{srcdir}}/gui/fbCollector.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
-    - {src: '{{srcdir}}/gui/fireballCollector.py', dest: '{{destdir}}/python/', mode: '755', backup: no, directory_mode: no }
-    - {src: '{{srcdir}}/gui/config.ini', dest: '{{destdir}}/python/', mode: '755', backup: no, directory_mode: no }
-    - {src: '{{srcdir}}/gui/noimage.jpg', dest: '{{destdir}}/python/', mode: '755', backup: no, directory_mode: no }
-    - {src: '{{srcdir}}/gui/ukmon.ico', dest: '{{destdir}}/python/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/fbCollector/fbCollector.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/fbCollector/config.ini', dest: '{{destdir}}/fbCollector/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/fbCollector/noimage.jpg', dest: '{{destdir}}/fbCollector/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/fbCollector/ukmon.ico', dest: '{{destdir}}/fbCollector/', mode: '755', backup: no, directory_mode: no }
