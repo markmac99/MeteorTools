@@ -12,6 +12,8 @@ import configparser
 import shutil
 import platform
 import subprocess
+import glob
+import xmltodict
 
 import boto3
 import paramiko
@@ -139,6 +141,11 @@ class fbCollector(Frame):
         log.info(f"Fireball folder is {self.fb_dir}")
 
         self.initUI()
+        if self.dir_path != self.fb_dir:
+            bin_list = self.get_bin_list()
+            for b in bin_list:
+                self.selected[b] = (0, '')
+            self.update_listbox(bin_list)
 
         # Update UI changes
         parent.update_idletasks()
@@ -245,9 +252,9 @@ class fbCollector(Frame):
         save_bmp = StyledButton(self.save_panel, text="Get Images", width = 8, command = lambda: self.get_data())
         save_bmp.grid(row = 1, column = 3)
 
-        save_bmp = StyledButton(self.save_panel, text="Select", width = 8, command = lambda: self.save_image())
+        save_bmp = StyledButton(self.save_panel, text="Remove Data", width = 8, command = lambda: self.remove_image())
         save_bmp.grid(row = 1, column = 4)
-        save_bmp = StyledButton(self.save_panel, text="Remove", width = 8, command = lambda: self.remove_image())
+        save_bmp = StyledButton(self.save_panel, text="Clean Folder", width = 8, command = lambda: self.clean_folder())
         save_bmp.grid(row = 1, column = 5)
         
 
@@ -413,6 +420,33 @@ class fbCollector(Frame):
         cur_index = int(self.listbox.curselection()[0])
         self.listbox.itemconfig(cur_index, fg = 'green')
         self.selected[current_image] = (1, srcfile)
+
+    def clean_folder(self):
+        xmls = glob.glob(os.path.join(self.dir_path, '*.xml'))
+        for xml in xmls:
+            ucxml = xmltodict.parse(open(xml).read())
+            fitsname = os.path.join(self.dir_path, 'jpgs', ucxml['ufocapture_record']['@cap']).replace('.fits', '.jpg')
+            jpgname = xml.replace('.xml', 'P.jpg')
+            try:
+                os.replace(jpgname, fitsname)
+            except Exception:
+                pass
+            os.remove(xml)
+        stacklist = os.listdir(os.path.join(self.dir_path, 'stacks'))
+        camlist = [x[:6] for x in stacklist if 'stack.jpg' in x]
+        datalist = os.listdir(self.dir_path)
+        datalist = [x for x in datalist if 'jpgs' not in x and 'mp4s' not in x and 'stacks' not in x]
+        for d in datalist:
+            keep = False
+            for c in camlist:
+                if c in d:
+                    keep = True
+            if keep is False:
+                try:
+                    os.remove(d)
+                except Exception:
+                    pass
+        return
 
     def get_data(self):
         thispatt = self.newpatt.get()
