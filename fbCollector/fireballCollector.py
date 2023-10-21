@@ -228,17 +228,22 @@ class fbCollector(Frame):
         fileMenu.add_separator()
         fileMenu.add_command(label="Fetch GMN Data", command=self.getGMNData)
         fileMenu.add_separator()
-        fileMenu.add_command(label="Update Watchlist", command=self.getWatchlist)
-        fileMenu.add_command(label="View Watchlist", command=self.viewWatchlist)
-        fileMenu.add_command(label="upload Watchlist", command=self.putWatchlist)
-        fileMenu.add_command(label="Fetch Event Data", command=self.getEventData)
-        fileMenu.add_separator()
         fileMenu.add_command(label="Exit", command=self.quitApplication)
         self.menuBar.add_cascade(label="File", underline=0, menu=fileMenu)
 
         revMenu = Menu(self.menuBar, tearoff=0)
+        revMenu.add_command(label="Get Images", command=self.get_data)
         revMenu.add_command(label="Review Stacks", command=self.checkStacks)
+        revMenu.add_command(label="Clean Folter", command=self.clean_folder)
         self.menuBar.add_cascade(label="Review", underline=0, menu=revMenu)
+
+        watchMenu = Menu(self.menuBar, tearoff=0)
+        watchMenu.add_command(label="Get Watchlist", command=self.getWatchlist)
+        watchMenu.add_command(label="View Watchlist", command=self.viewWatchlist)
+        watchMenu.add_command(label="Upload Watchlist", command=self.putWatchlist)
+        watchMenu.add_separator()
+        watchMenu.add_command(label="Fetch Event Data", command=self.getEventData)
+        self.menuBar.add_cascade(label="Watchlist", underline=0, menu=watchMenu)
 
         # buttons
         self.save_panel = LabelFrame(self, text=' Image Selection ')
@@ -252,10 +257,8 @@ class fbCollector(Frame):
         save_bmp = StyledButton(self.save_panel, text="Get Images", width = 8, command = lambda: self.get_data())
         save_bmp.grid(row = 1, column = 3)
 
-        save_bmp = StyledButton(self.save_panel, text="Remove Data", width = 8, command = lambda: self.remove_image())
+        save_bmp = StyledButton(self.save_panel, text="Remove", width = 8, command = lambda: self.remove_image())
         save_bmp.grid(row = 1, column = 4)
-        save_bmp = StyledButton(self.save_panel, text="Clean Folder", width = 8, command = lambda: self.clean_folder())
-        save_bmp.grid(row = 1, column = 5)
         
 
         # Listbox
