@@ -53,4 +53,5 @@ remove-item $env:temp\$orbname\* -Recurse
 
 curl -X PUT -H "Content-Type:application/zip" --data-binary "@$env:temp\$orbname.zip" "https://api.ukmeteors.co.uk/fireballfiles?orbitfile=$orbname.zip"
 move-item $env:temp\$orbname.zip $mp4dir\.. -Force
+Write-Output "uploaded at $(get-date)"
 set-location $loc
