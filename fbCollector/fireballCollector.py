@@ -19,6 +19,8 @@ import boto3
 import paramiko
 from scp import SCPClient
 
+from meteortools.ukmondb import getECSVs as getecsv
+
 import tkinter as tk
 import tkinter.filedialog as tkFileDialog
 import tkinter.messagebox as tkMessageBox
@@ -226,16 +228,15 @@ class fbCollector(Frame):
         fileMenu.add_command(label="Load Folder", command=self.loadFolder)
         fileMenu.add_command(label="Delete Folder", command=self.delFolder)
         fileMenu.add_separator()
-        fileMenu.add_command(label="Fetch GMN Data", command=self.getGMNData)
-        fileMenu.add_separator()
         fileMenu.add_command(label="Exit", command=self.quitApplication)
         self.menuBar.add_cascade(label="File", underline=0, menu=fileMenu)
 
-        revMenu = Menu(self.menuBar, tearoff=0)
-        revMenu.add_command(label="Get Images", command=self.get_data)
-        revMenu.add_command(label="Review Stacks", command=self.checkStacks)
-        revMenu.add_command(label="Clean Folter", command=self.clean_folder)
-        self.menuBar.add_cascade(label="Review", underline=0, menu=revMenu)
+        rawMenu = Menu(self.menuBar, tearoff=0)
+        rawMenu.add_command(label="Get Live Images", command=self.get_data)
+        rawMenu.add_command(label="Get GMN Raw Data", command=self.getGMNData)
+        rawMenu.add_separator()
+        rawMenu.add_command(label="Get ECSVs", command=self.getECSVs)
+        self.menuBar.add_cascade(label="Raw", underline=0, menu=rawMenu)
 
         watchMenu = Menu(self.menuBar, tearoff=0)
         watchMenu.add_command(label="Get Watchlist", command=self.getWatchlist)
@@ -245,6 +246,17 @@ class fbCollector(Frame):
         watchMenu.add_command(label="Fetch Event Data", command=self.getEventData)
         self.menuBar.add_cascade(label="Watchlist", underline=0, menu=watchMenu)
 
+        revMenu = Menu(self.menuBar, tearoff=0)
+        revMenu.add_command(label="Review Stacks", command=self.checkStacks)
+        revMenu.add_command(label="Clean Folder", command=self.clean_folder)
+        self.menuBar.add_cascade(label="Review", underline=0, menu=revMenu)
+
+        solveMenu = Menu(self.menuBar, tearoff=0)
+        solveMenu.add_command(label="Reduce Data", command=self.reduceCamera)
+        solveMenu.add_command(label="Solve", command=self.solveOrbit)
+        solveMenu.add_separator()
+        solveMenu.add_command(label="Upload Orbit", command=self.uploadOrbit)
+        self.menuBar.add_cascade(label="Solve", underline=0, menu=solveMenu)
         # buttons
         self.save_panel = LabelFrame(self, text=' Image Selection ')
         self.save_panel.grid(row = 1, columnspan = 2, sticky='WE')
@@ -287,6 +299,37 @@ class fbCollector(Frame):
         # Timestamp label
         self.timestamp_label = Label(self, text = "CCNNNN YYYY-MM-DD HH:MM.SS.mms", font=("Courier", 12))
         self.timestamp_label.grid(row = 7, column = 3, sticky = "E")
+
+    def reduceCamera(self):
+        current_image = self.listbox.get(ACTIVE)
+        if current_image == '':
+            return 
+        camid = current_image[:6]
+        print('selected camera is', camid)
+        return
+    
+    def solveOrbit(self):
+        return 
+    
+    def uploadOrbit(self):
+        return 
+    
+    def getECSVs(self):
+        current_image = self.listbox.get(ACTIVE)
+        if current_image[:1] == 'M':
+            datestr = current_image[1:16]
+            statid = current_image[-11:-5]
+        elif current_image[:2] == 'FF':
+            statid = current_image[3:9]
+            datestr = current_image[10:25]
+        else:
+            return
+        dtval = datetime.datetime.strptime(datestr, '%Y%m%d_%H%M%S')
+        datestr = dtval.strftime('%Y-%m-%dT%H:%M:%S')
+
+        getecsv(statid, datestr, savefiles=True, outdir=os.path.join(self.dir_path, statid))
+        # curl "https://api.ukmeteors.co.uk/getecsv?dt=2023-10-29T22:01:24&stat=UK008G"
+        return
 
     def get_bin_list(self):
         """ Get a list of image files in a given directory.
@@ -430,6 +473,8 @@ class fbCollector(Frame):
             ucxml = xmltodict.parse(open(xml).read())
             fitsname = os.path.join(self.dir_path, 'jpgs', ucxml['ufocapture_record']['@cap']).replace('.fits', '.jpg')
             jpgname = xml.replace('.xml', 'P.jpg')
+            if not os.path.isfile(jpgname):
+                jpgname = xml.replace('.xml','P.jpg')
             try:
                 os.replace(jpgname, fitsname)
             except Exception:
@@ -458,7 +503,18 @@ class fbCollector(Frame):
         self.dir_path = os.path.join(self.fb_dir, thispatt)
         log.info(f'getting data matching {thispatt}')
         getLiveJpgs(thispatt, outdir=self.dir_path)
+        self.renameImages(self.dir_path)
         self.update_listbox(self.get_bin_list())
+
+    def renameImages(self, dir_path):
+        xmllist = glob.glob(os.path.join(dir_path,'M*.xml'))
+        for xmlf in xmllist:
+            jpgf = xmlf.replace('.xml','P.jpg')
+            if os.path.isfile(xmlf):
+                xmld = xmltodict.parse(open(xmlf).read())
+                realfname = xmld['ufocapture_record']['@cap'].replace('.fits','.jpg')
+                os.rename(jpgf, os.path.join(dir_path, realfname))
+        return 
 
     def viewWatchlist(self):
         evtfile = os.path.join(self.fb_dir,'event_watchlist.txt')
@@ -499,7 +555,7 @@ class fbCollector(Frame):
         log.info('Uploading watchlist')
         evtfile = os.path.join(self.fb_dir,'event_watchlist.txt')
         scpcli.put(evtfile, 'event_watchlist.txt')
-        self.evtMonTriggered = datetime.datetime.now() + datetime.timedelta(minutes=31)
+        self.evtMonTriggered = datetime.datetime.now() + datetime.timedelta(minutes=10)
         return 
     
     def getEventData(self):
@@ -507,7 +563,7 @@ class fbCollector(Frame):
             tkMessageBox.showinfo("Warning", 'Event Monitor has not been triggered')
             return
         if datetime.datetime.now() < self.evtMonTriggered:
-            tkMessageBox.showinfo("Warning", f'Wait till {self.evtMonTriggered.strftime("%H:%M:%S")}')
+            tkMessageBox.showinfo("Warning", f'Wait till at least {self.evtMonTriggered.strftime("%H:%M:%S")}')
             return
         os.chdir(self.fb_dir)
         evtdate = self.newpatt.get().strip()

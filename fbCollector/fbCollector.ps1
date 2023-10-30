@@ -7,7 +7,7 @@ push-location $PSScriptRoot
 . .\helperfunctions.ps1
 $ini=get-inicontent analysis.ini
 
-$fbfldr=$ini['fireballs']['localfolder']
+#$fbfldr=$ini['fireballs']['localfolder']
 $env:PYLIB=$ini['pylib']['pylib']
 
 conda activate ukmon-shared
