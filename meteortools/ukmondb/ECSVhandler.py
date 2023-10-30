@@ -34,8 +34,9 @@ def getECSVs(stationID, dateStr, savefiles=False, outdir='.'):
                         if outf is not False:
                             outf.close()
                         j=j+1
-                        outf = open(os.path.join(outdir, fnamebase + f'_M{j:03d}.ecsv'), 'w')
-                        print('saving to ', fnamebase + f'_M{j:03d}.ecsv')
+                        fname = fnamebase + f'_ukmda_{stationID}_M{j:03d}.ecsv'
+                        outf = open(os.path.join(outdir, fname), 'w')
+                        print('saving to ', os.path.join(outdir,fname))
                     outf.write(f'{li}\n')
         else:
             print('no error, but no data returned')
