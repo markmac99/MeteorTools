@@ -26,23 +26,17 @@ def getECSVs(stationID, dateStr, savefiles=False, outdir='.'):
             ecsvlines=rawdata.split('\n') # convert the raw data into a python list
             if savefiles is True:
                 os.makedirs(outdir, exist_ok=True)
-                numecsvs = len([e for e in ecsvlines if '# %ECSV' in e]) # find out how many meteors 
                 fnamebase = dateStr.replace(':','_').replace('.','_') # create an output filename
-                if numecsvs == 1:
-                    print('saving to ', fnamebase+ '.ecsv')
-                    with open(os.path.join(outdir, fnamebase + '.ecsv'), 'w') as outf:
-                        outf.writelines(ecsvlines)
-                else:
-                    outf = None
-                    j=1
-                    for i in range(len(ecsvlines)):
-                        if '# %ECSV' in ecsvlines[i]:
-                            if outf is not None:
-                                outf.close()
-                                j=j+1
-                            outf = open(os.path.join(outdir, fnamebase + f'_M{j:03d}.ecsv'), 'w')
-                            print('saving to ', fnamebase + f'_M{j:03d}.ecsv')
-                        outf.write(f'{ecsvlines[i]}\n')
+                j=0
+                outf = False
+                for li in ecsvlines:
+                    if '# %ECSV' in li:
+                        if outf is not False:
+                            outf.close()
+                        j=j+1
+                        outf = open(os.path.join(outdir, fnamebase + f'_M{j:03d}.ecsv'), 'w')
+                        print('saving to ', fnamebase + f'_M{j:03d}.ecsv')
+                    outf.write(f'{li}\n')
         else:
             print('no error, but no data returned')
     else:
