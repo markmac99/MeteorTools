@@ -235,7 +235,7 @@ class fbCollector(Frame):
         rawMenu.add_command(label="Get Live Images", command=self.get_data)
         rawMenu.add_command(label="Get GMN Raw Data", command=self.getGMNData)
         rawMenu.add_separator()
-        rawMenu.add_command(label="Get ECSVs", command=self.getECSVs)
+        rawMenu.add_command(label="Get ECSV", command=self.getECSVs)
         self.menuBar.add_cascade(label="Raw", underline=0, menu=rawMenu)
 
         watchMenu = Menu(self.menuBar, tearoff=0)
@@ -338,7 +338,8 @@ class fbCollector(Frame):
             dirname = tkFileDialog.askdirectory(parent=root,initialdir=self.fb_dir,
                 title='Please select a directory')    
             _, thispatt = os.path.split(dirname)
-            self.dir_path = os.path.join(self.fb_dir, thispatt)
+            print(dirname, thispatt)
+            self.dir_path = dirname
             self.patt = thispatt
             self.newpatt.set(self.patt)
 
@@ -426,9 +427,15 @@ class fbCollector(Frame):
         if self.review_stack:
             self.removeRelated(current_image)
         else:
-            os.remove(os.path.join(self.dir_path, current_image))
+            try:
+                os.remove(os.path.join(self.dir_path, current_image))
+            except Exception:
+                pass
             xmlf = current_image.replace('P.jpg', '.xml')
-            os.remove(os.path.join(self.dir_path, xmlf))
+            try:
+                os.remove(os.path.join(self.dir_path, xmlf))
+            except Exception:
+                pass
             self.selected[current_image] = (0,'')
         self.update_listbox(self.get_bin_list())
 
