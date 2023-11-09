@@ -7,19 +7,19 @@ if [ $# -gt 1 ] ; then
 fi 
 pushd $locf
 pwd
-rsync -avz ukmonhelper:ukmon-shared/kmls/* kmls/
-rsync -avz ukmonhelper:prod/data/*.png .
-rsync -avz ukmonhelper:prod/data/*.jpg .
-rsync -avz ukmonhelper:prod/data/single/*.csv single/
-rsync -avz ukmonhelper:prod/data/single/*.snap single/
-rsync -avz ukmonhelper:prod/data/matched/*.csv matched/
-rsync -avz ukmonhelper:prod/data/matched/*.snap matched/
-rsync -avz ukmonhelper:prod/data/consolidated/ consolidated/
-rsync -avz ukmonhelper:prod/data/latest/ latest/
-rsync -avz ukmonhelper:prod/data/dailyreports/ dailyreports/
-rsync -avz ukmonhelper:prod/data/searchidx/ searchidx/
-rsync -avz ukmonhelper:prod/data/admin/ admin/
-rsync -avz ukmonhelper:prod/data/browse/ browse/
-rsync -avz ukmonhelper:prod/logs/ logs/ 
+rsync -avz ukmonhelper2:ukmon-shared/kmls/* kmls/
+rsync -avz ukmonhelper2:prod/data/*.png .
+rsync -avz ukmonhelper2:prod/data/*.jpg .
+rsync -avz ukmonhelper2:prod/data/single/*.csv single/
+rsync -avz ukmonhelper2:prod/data/single/*.snap single/
+rsync -avz ukmonhelper2:prod/data/matched/*.csv matched/
+rsync -avz ukmonhelper2:prod/data/matched/*.snap matched/
+rsync -avz ukmonhelper2:prod/data/consolidated/ consolidated/
+rsync -avz ukmonhelper2:prod/data/latest/ latest/
+rsync -avz ukmonhelper2:prod/data/dailyreports/ dailyreports/
+rsync -avz ukmonhelper2:prod/data/searchidx/ searchidx/
+rsync -avz ukmonhelper2:prod/data/admin/ admin/
+rsync -avz ukmonhelper2:prod/data/browse/ browse/
+rsync -avz ukmonhelper2:prod/logs/ logs/ 
 find logs/ -mtime +30 -exec rm -f {} \;
 popd
