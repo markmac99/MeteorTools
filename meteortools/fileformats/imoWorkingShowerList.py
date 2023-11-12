@@ -30,7 +30,7 @@ class IMOshowerList:
     debated and unconfirmed showers. 
 
     These list are updated whenever the library version is bumped, but if you want to override the files, define an 
-    environment variable DATADIR, and place your own copies of the files at $DATADIR/share. See the share submodule 
+    environment variable DATADIR and place your own copies of the files at $DATADIR/share. See the share submodule 
     for more information. 
 
     """
@@ -90,7 +90,27 @@ class IMOshowerList:
                 ds2['pksollon'] = pksollong
                 #print(ds2)
             else:
-                print('no match in the full stream database')
+                # okay so its poor quality but lets try it anyway
+                mtch = subset
+                ds2 = copy.deepcopy(ds)
+                ds2['IAU_code'] = mtch[-1][3].strip()
+                ds2['name'] = mtch[-1][4].strip()
+                ds2['V'] = mtch[-1][12]
+                ds2['@id'] = mtch[-1][1]
+                ds2['RA'] = mtch[-1][8]
+                ds2['DE'] = mtch[-1][9]
+
+                pksollong = float(mtch[-1][7])
+                dt = datetime.datetime.now()
+                yr = dt.year
+                mth = dt.month
+                jd = sollon2jd(yr, mth, pksollong)
+                pkdt = jd2Date(jd, dt_obj=True)
+                ds2['peak'] = pkdt.strftime('%h %d')
+                # start/end pop idx, ZHR not available in the IAU data
+                ds2['start'] = (pkdt + datetime.timedelta(days=-2)).strftime('%h %d')
+                ds2['end'] = (pkdt + datetime.timedelta(days=2)).strftime('%h %d')
+                ds2['pksollon'] = pksollong
         if useFull is False:
             if 'pksollon' not in ds:
                 ds['pksollon'] = ds2['pksollon']
