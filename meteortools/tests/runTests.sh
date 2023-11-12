@@ -10,7 +10,7 @@ if [ "$(hostname)" == "MARKSDT" ] ; then
         conda create -n mttest python=3.8 -y
     fi 
     conda activate mttest
-    pip install pytest pytest-cov 
+    pip install pytest pytest-cov
     #pip install --upgrade -r ../requirements.txt
     export PYTHONPATH=/mnt/e/dev/meteorhunting/WesternMeteorPyLib:/mnt/e/dev/meteorhuunting/RMS:.:..
 else
@@ -25,6 +25,7 @@ else
     fi
     pip install pytest pytest-cov 
     pip install --upgrade meteortools
+    pip install boto3
 fi
 pytest -v --cov=. --cov-report=term-missing $here/test_fileformats.py $here/test_ukmondb.py $here/test_utils.py
 
