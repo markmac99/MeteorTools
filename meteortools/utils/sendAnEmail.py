@@ -76,7 +76,6 @@ def _refreshCreds(tokfile=None, crdfile=None):
 
 
 def _create_message(sender, to, subject, message_text, msg_text_html=None):
-
     if msg_text_html is None:
         msg = MIMEText(message_text)
     else:
