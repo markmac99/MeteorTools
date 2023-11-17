@@ -5,6 +5,7 @@
 import os
 import pandas as pd
 import requests
+import datetime
 
 
 def getLiveJpgs(dtstr, outdir=None, create_txt=False):
@@ -25,13 +26,18 @@ def getLiveJpgs(dtstr, outdir=None, create_txt=False):
     os.makedirs(outdir, exist_ok=True)
 
     apiurl = 'https://api.ukmeteors.co.uk/liveimages/getlive'
-    liveimgs = pd.read_json(f'{apiurl}?pattern={dtstr}')
 
-    weburl = 'https://live.ukmeteornetwork.co.uk/'
+    while len(dtstr) < 15:
+        dtstr = dtstr + '0'    
+    isodt1 = datetime.datetime.strptime(dtstr[:15],'%Y%m%d_%H%M%S')
+    fromdstr = isodt1.isoformat()[:19]+'.000Z'
+    isodt2 = isodt1 + datetime.timedelta(minutes=1)
+    todstr = isodt2.isoformat()[:19]+'.000Z'
+    liveimgs = pd.read_json(f'{apiurl}?dtstr={fromdstr}&enddtstr={todstr}&fmt=json')
 
     for _, img in liveimgs.iterrows():
         try:
-            jpgurl = f'{weburl}{img.image_name}'
+            jpgurl = img.urls['url']
             _download(jpgurl, outdir)
             xmlurl = jpgurl.replace('P.jpg', '.xml')
             _download(xmlurl, outdir)
