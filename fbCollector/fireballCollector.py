@@ -517,7 +517,7 @@ class fbCollector(Frame):
         xmllist = glob.glob(os.path.join(dir_path,'M*.xml'))
         for xmlf in xmllist:
             jpgf = xmlf.replace('.xml','P.jpg')
-            if os.path.isfile(xmlf):
+            if os.path.isfile(jpgf):
                 xmld = xmltodict.parse(open(xmlf).read())
                 realfname = xmld['ufocapture_record']['@cap'].replace('.fits','.jpg')
                 os.rename(jpgf, os.path.join(dir_path, realfname))
