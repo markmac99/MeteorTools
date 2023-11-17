@@ -128,13 +128,13 @@ def test_getTrajPickleNonExistent():
 def test_getLiveJpgs():
     s3 = boto3.client('s3')
     dtstr = datetime.datetime.now().strftime('%Y%m%d')
-    x = s3.list_objects_v2(Bucket='ukmon-live',Prefix=f'M{dtstr}')
+    x = s3.list_objects_v2(Bucket='ukmda-live',Prefix=f'M{dtstr}')
     if x['KeyCount'] > 0:
         fname = x['Contents'][0]['Key']
         dtstr = fname[1:16]
     else:
         dtstr = (datetime.datetime.now()+datetime.timedelta(days=-1)).strftime('%Y%m%d')
-        x = s3.list_objects_v2(Bucket='ukmon-live',Prefix=f'M{dtstr}')
+        x = s3.list_objects_v2(Bucket='ukmda-live',Prefix=f'M{dtstr}')
         fname = x['Contents'][0]['Key']
         dtstr = fname[1:16]
 

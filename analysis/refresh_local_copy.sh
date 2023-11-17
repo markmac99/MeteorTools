@@ -7,7 +7,6 @@ if [ $# -gt 1 ] ; then
 fi 
 pushd $locf
 pwd
-rsync -avz ukmonhelper2:ukmon-shared/kmls/* kmls/
 rsync -avz ukmonhelper2:prod/data/*.png .
 rsync -avz ukmonhelper2:prod/data/*.jpg .
 rsync -avz ukmonhelper2:prod/data/single/*.csv single/

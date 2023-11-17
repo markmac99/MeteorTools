@@ -23,7 +23,7 @@ if ((test-path $targloc\$yr\$yr$mth) -eq 0 ){
 	mkdir $targloc\$yr\$yr$mth
 }
 
-aws s3 sync s3://ukmon-shared/videos/$yr/$yr$mth/ $targloc\$yr\$yr$mth --exclude "*" --include "*.mp4"
+aws s3 sync s3://ukmda-shared/videos/$yr/$yr$mth/ $targloc\$yr\$yr$mth --exclude "*" --include "*.mp4"
 
 Write-Output "Done"
 explorer $yr\$yr$mth

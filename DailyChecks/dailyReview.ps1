@@ -125,6 +125,4 @@ if ($RMS_INSTALLED -eq 1){
     }    
 }
 set-location $PSScriptRoot
-# .\reorgByYMD.ps1 $args[0]
-# .\UploadToUkMon.ps1 $args[0]
 

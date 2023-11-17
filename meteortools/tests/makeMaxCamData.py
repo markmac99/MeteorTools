@@ -8,7 +8,7 @@ from fileformats.ftpDetectInfo import filterFTPforSpecificTime
 
 
 def gatherData(camlist, ymd, outdir, patt):
-    s3bucket='ukmon-shared'
+    s3bucket='ukmda-shared'
     s3 = boto3.resource('s3')
 
     for camid in camlist:
