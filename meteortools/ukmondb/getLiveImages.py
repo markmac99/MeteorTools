@@ -39,8 +39,11 @@ def getLiveJpgs(dtstr, outdir=None, create_txt=False):
         try:
             jpgurl = img.urls['url']
             _download(jpgurl, outdir)
-            xmlurl = jpgurl.replace('P.jpg', '.xml')
-            _download(xmlurl, outdir)
+            try:
+                xmlurl = jpgurl.replace('P.jpg', '.xml')
+                _download(xmlurl, outdir)
+            except Exception:
+                pass
             print(f'retrieved {jpgurl}')
             if create_txt:
                 createTxtFile(img.image_name, outdir)
@@ -140,7 +143,7 @@ def createTxtFile(fname, outdir=None):
 def _download(url, outdir, fname=None):
     get_response = requests.get(url, stream=True)
     if fname is None:
-        fname = url.split("/")[-1]
+        fname = url.split('?')[0].split("/")[-1]
     with open(os.path.join(outdir, fname), 'wb') as f:
         for chunk in get_response.iter_content(chunk_size=4096):
             if chunk: # filter out keep-alive new chunks
