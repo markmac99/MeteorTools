@@ -40,7 +40,7 @@ def gatherData(camlist, ymd, outdir, patt):
 
 if __name__ == '__main__':
     # get datafile with
-    # curl "https://api.ukmeteornetwork.co.uk/matches?reqtyp=detail&reqval=20230219_040224.504_UK" > .\MaxCams\19stationmatch.txt
+    # curl "https://api.ukmeteors.co.uk/matches?reqtyp=detail&reqval=20230219_040224.504_UK" > .\MaxCams\19stationmatch.txt
 
     js = json.load(open('MaxCams/19stationmatch.txt', 'r'))
     camlist=js['stations'].split(';')

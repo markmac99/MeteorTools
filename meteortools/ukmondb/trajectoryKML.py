@@ -23,7 +23,7 @@ def trajectoryKML(trajname, outdir=None):
     Returns:  
         kmlfile:    name of the saved KML file  
     """
-    apiurl = 'https://api.ukmeteornetwork.co.uk/pickle/getpickle'
+    apiurl = 'https://api.ukmeteors.co.uk/pickle/getpickle'
     fmt = 'json'
     apicall = f'{apiurl}?reqval={trajname}&format={fmt}'
     res = requests.get(apicall, stream=True)

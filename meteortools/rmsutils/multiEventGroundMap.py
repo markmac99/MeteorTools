@@ -34,7 +34,7 @@ def multiEventGroundMap(startdt, enddt, statid=None, shwr=None, outdir=None):
     yr = startdt[:4]
 
     cols=['_lat1', '_lng1','_lat2','_lng2','_stream','dtstamp', 'stations']
-    matchfile = f'https://archive.ukmeteornetwork.co.uk/browse/parquet/matches-full-{yr}.parquet.snap'
+    matchfile = f'https://archive.ukmeteors.co.uk/browse/parquet/matches-full-{yr}.parquet.snap'
 
     dta = pd.read_parquet(matchfile, columns=cols)
 

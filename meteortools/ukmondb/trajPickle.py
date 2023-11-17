@@ -30,7 +30,7 @@ def getTrajPickle(trajname, outdir=None):
         WMPL must be in the $PYTHONPATH for this function to be available
 
     """
-    apiurl = 'https://api.ukmeteornetwork.co.uk/pickle/getpickle'
+    apiurl = 'https://api.ukmeteors.co.uk/pickle/getpickle'
     fmt = 'pickle'
     apicall = f'{apiurl}?reqval={trajname}&format={fmt}'
     matchpickle = pd.read_json(apicall, lines=True)

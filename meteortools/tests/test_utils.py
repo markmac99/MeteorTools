@@ -271,6 +271,6 @@ def test_sendAnEmail():
     mailrecip = 'markmcintyre99@googlemail.com'
     message = "test"
     msgtype = None
-    mailfrom = 'noreply@ukmeteornetwork.co.uk'
+    mailfrom = 'noreply@ukmeteors.co.uk'
     ret = sendAnEmail(mailrecip, message, msgtype, mailfrom, files=None)
     assert ret is None

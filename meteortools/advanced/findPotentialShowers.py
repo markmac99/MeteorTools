@@ -38,11 +38,11 @@ def getNthClosestEps(npdata, pct=23, nsamples=5):
 
 def loadUkmonData(mthstr):
     """
-    Load the UKMON dataset. We're only interested in a subset of the data. 
+    Load the dataset. We're only interested in a subset of the data. 
     Having loaded it, calculate the six elements of the vector we're going to use
     for the clustering analysis. 
     """
-    urlstr = f'https://archive.ukmeteornetwork.co.uk/browse/monthly/{mthstr}-matches.csv'
+    urlstr = f'https://archive.ukmeteors.co.uk/browse/monthly/{mthstr}-matches.csv'
     datadir = os.getenv('DATADIR', default='f:/videos/meteorcam/ukmondata')
     fname = os.path.join(datadir, f'{mthstr}-matches.csv')
     df = pd.read_csv(urlstr)
