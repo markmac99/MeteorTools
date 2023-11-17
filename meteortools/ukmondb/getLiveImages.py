@@ -33,18 +33,13 @@ def getLiveJpgs(dtstr, outdir=None, create_txt=False):
     fromdstr = isodt1.isoformat()[:19]+'.000Z'
     isodt2 = isodt1 + datetime.timedelta(minutes=1)
     todstr = isodt2.isoformat()[:19]+'.000Z'
-    liveimgs = pd.read_json(f'{apiurl}?dtstr={fromdstr}&enddtstr={todstr}&fmt=json')
+    liveimgs = pd.read_json(f'{apiurl}?dtstr={fromdstr}&enddtstr={todstr}&fmt=withxml')
 
     for _, img in liveimgs.iterrows():
         try:
             jpgurl = img.urls['url']
-            _download(jpgurl, outdir)
-            try:
-                xmlurl = jpgurl.replace('P.jpg', '.xml')
-                _download(xmlurl, outdir)
-            except Exception:
-                pass
-            print(f'retrieved {jpgurl}')
+            fname = _download(jpgurl, outdir)
+            print(f'retrieved {fname}')
             if create_txt:
                 createTxtFile(img.image_name, outdir)
         except:
@@ -99,7 +94,7 @@ def getFBfiles(patt, outdir=None):
     for _,fil in fbfiles.iterrows():
         fname = fil['filename']
         url = fil['url']
-        _download(url, outdir, fname)
+        _ = _download(url, outdir, fname)
         print(fname)
     return fbfiles
 
@@ -148,3 +143,4 @@ def _download(url, outdir, fname=None):
         for chunk in get_response.iter_content(chunk_size=4096):
             if chunk: # filter out keep-alive new chunks
                 f.write(chunk)
+    return fname
