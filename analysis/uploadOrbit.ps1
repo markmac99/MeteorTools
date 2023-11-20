@@ -10,7 +10,9 @@ if ($args.count -lt 1) {
 }
 Add-Type -AssemblyName System.Windows.Forms
 
-# look for a single pickle file in the target folder
+conda activate wmpl
+
+write-output "Find the pickle"
 $picklefile= (Get-ChildItem $curdir\*.pickle -r).fullname
 if ($picklefile -is [Array] -or $picklefile.length -eq 0) {
     $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ InitialDirectory = $curdir; Filter = 'pickles (*.pickle)|*.pickle'; Title='Select orbit pickle' }
@@ -22,26 +24,27 @@ if ($picklefile -is [Array] -or $picklefile.length -eq 0) {
         exit
     }
 }
-$srcdir = (get-item $picklefile).directoryname
-
-# look for jpgs and mp4s in the expected place relative to the pickle file
-$jpgdir = resolve-path $srcdir\..\jpgs 
-if ((test-path $jpgdir) -eq 0) 
+write-output "find the orbit full name"
+$srcdir = ((get-item $picklefile).directoryname).replace('\','/')
+$pickname = (get-item $picklefile).name
+$origdir = (python -c "from wmpl.Utils.Pickling import loadPickle;pick = loadPickle('${srcdir}','${pickname}');print(pick.output_dir)")
+$orbname = split-path $origdir -leaf
+if ((test-path $curdir\$orbname) -eq 0 )
 {
-    $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ InitialDirectory = $curdir; Filter = 'images (*.jpg)|*.jpg'; Title='Select JPG folder' }
-    $null = $FileBrowser.ShowDialog()
-    $jpgs = $filebrowser.filename
-    $jpgdir = (get-item $jpgs).directoryname    
+    mkdir -force $curdir\$orbname
+    move-item $picklefile $curdir\$orbname\
 }
-$mp4dir = resolve-path $srcdir\..\mp4s 
-if ((test-path $mp4dir) -eq 0){
-    $FileBrowser = New-Object System.Windows.Forms.OpenFileDialog -Property @{ InitialDirectory = $curdir; Filter = 'images (*.mp4)|*.mp4'; Title='Select MP4 folder' }
-    $null = $FileBrowser.ShowDialog()
-    $mp4s = $filebrowser.filename
-    $mp4dir = (get-item $mp4s).directoryname
-}
-$orbname = (get-item ((get-item $picklefile).directoryname)).name
+$picklefile = (Get-ChildItem $curdir\$orbname\*.pickle -r).fullname
 
+write-output "look for jpgs and mp4s"
+mkdir -force $curdir\jpgs
+$jpgdir = resolve-path $curdir\jpgs 
+Move-Item $curdir\*.jpg $jpgdir
+mkdir -force $curdir\mp4s
+$mp4dir = resolve-path $curdir\mp4s 
+Move-Item $curdir\*.mp4 $mp4dir
+
+write-output "Creating zip file"
 if ((test-path $env:temp\$orbname\mp4s) -eq 0 ) {mkdir $env:temp\$orbname\mp4s | out-null}
 if ((test-path $env:temp\$orbname\jpgs) -eq 0 ) {mkdir $env:temp\$orbname\jpgs | out-null}
 copy-item $picklefile $env:temp\$orbname
@@ -51,7 +54,9 @@ if ((test-path $env:temp\$orbname.zip) -eq 1 ) { remove-item $env:temp\$orbname.
 compress-archive -destinationpath "$env:temp\$orbname.zip" -path "$env:temp\$orbname\*" 
 remove-item $env:temp\$orbname\* -Recurse
 
+write-output "Uploading $orbname.zip"
 curl -X PUT -H "Content-Type:application/zip" --data-binary "@$env:temp\$orbname.zip" "https://api.ukmeteors.co.uk/fireballfiles?orbitfile=$orbname.zip"
-move-item $env:temp\$orbname.zip $mp4dir\.. -Force
+move-item $env:temp\$orbname.zip $curdir -Force
 Write-Output "uploaded at $(get-date)"
 set-location $loc
+conda deactivate
