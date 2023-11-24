@@ -8,9 +8,17 @@ if ($args.count -lt 1) {
 }else {
     $curdir = resolve-path $args[0]
 }
+set-location $PSScriptRoot
+# load the helper functions
+. .\helperfunctions.ps1
+$ini=get-inicontent analysis.ini
+Set-Location $Loc
+
 Add-Type -AssemblyName System.Windows.Forms
 
-conda activate wmpl
+conda activate $ini['wmpl']['wmpl_env']
+$wmplloc = $ini['wmpl']['wmpl_loc']
+$env:pythonpath="$wmplloc;$env:pythonpath"
 
 write-output "Find the pickle"
 $picklefile= (Get-ChildItem $curdir\*.pickle -r).fullname
