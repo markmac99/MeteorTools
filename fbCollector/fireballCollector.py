@@ -475,18 +475,6 @@ class fbCollector(Frame):
         self.selected[current_image] = (1, srcfile)
 
     def clean_folder(self):
-        xmls = glob.glob(os.path.join(self.dir_path, '*.xml'))
-        for xml in xmls:
-            ucxml = xmltodict.parse(open(xml).read())
-            fitsname = os.path.join(self.dir_path, 'jpgs', ucxml['ufocapture_record']['@cap']).replace('.fits', '.jpg')
-            jpgname = xml.replace('.xml', 'P.jpg')
-            if not os.path.isfile(jpgname):
-                jpgname = xml.replace('.xml','P.jpg')
-            try:
-                os.replace(jpgname, fitsname)
-            except Exception:
-                pass
-            os.remove(xml)
         stacklist = os.listdir(os.path.join(self.dir_path, 'stacks'))
         camlist = [x[:6] for x in stacklist if 'stack.jpg' in x]
         datalist = os.listdir(self.dir_path)
@@ -521,6 +509,7 @@ class fbCollector(Frame):
                 xmld = xmltodict.parse(open(xmlf).read())
                 realfname = xmld['ufocapture_record']['@cap'].replace('.fits','.jpg')
                 os.rename(jpgf, os.path.join(dir_path, realfname))
+                os.remove(xmlf)
         return 
 
     def viewWatchlist(self):
