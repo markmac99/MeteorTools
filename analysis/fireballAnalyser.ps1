@@ -35,7 +35,8 @@ $env:pythonpath="$wmplloc;$env:pylib"
 
 #Write-Output $env:pythonpath
 
-$solver = read-host -prompt "ECSV or RMS solver? (E/R)"
+#$solver = read-host -prompt "ECSV or RMS solver? (E/R)"
+$solver = 'E'
 if ($solver -eq 'E') {
     python -m wmpl.Formats.ECSV . -l -x -r $mcrun -w -t 5
 }
