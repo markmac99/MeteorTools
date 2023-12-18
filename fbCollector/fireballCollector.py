@@ -344,9 +344,10 @@ class fbCollector(Frame):
             self.newpatt.set(self.patt)
 
         if self.review_stack is False:
-            targdir = self.dir_path
+            targdir = os.path.join(self.dir_path, 'jpgs')
         else:
-            targdir = self.dir_path + '/stacks'
+            targdir = os.path.join(self.dir_path, 'stacks')
+        print(targdir)
         bin_list = [line for line in os.listdir(targdir) if self.correct_datafile_name(line)]
         return bin_list
 
@@ -428,12 +429,12 @@ class fbCollector(Frame):
             self.removeRelated(current_image)
         else:
             try:
-                os.remove(os.path.join(self.dir_path, current_image))
+                os.remove(os.path.join(self.dir_path, 'jpgs', current_image))
             except Exception:
                 pass
             xmlf = current_image.replace('P.jpg', '.xml')
             try:
-                os.remove(os.path.join(self.dir_path, xmlf))
+                os.remove(os.path.join(self.dir_path, 'jpgs', xmlf))
             except Exception:
                 pass
             self.selected[current_image] = (0,'')
@@ -447,7 +448,7 @@ class fbCollector(Frame):
             if self.review_stack:
                 self.current_image = os.path.join(self.dir_path, 'stacks', self.listbox.get(self.listbox.curselection()[0]))
             else:
-                self.current_image = os.path.join(self.dir_path, self.listbox.get(self.listbox.curselection()[0]))
+                self.current_image = os.path.join(self.dir_path, 'jpgs', self.listbox.get(self.listbox.curselection()[0]))
         except:
             return 0
         
@@ -493,22 +494,27 @@ class fbCollector(Frame):
 
     def get_data(self):
         thispatt = self.newpatt.get()
-        thispatt = thispatt.strip()[:14] # ignore seconds so that we don't miss data
-        self.patt = thispatt         
-        self.dir_path = os.path.join(self.fb_dir, thispatt)
+        self.patt = thispatt.ljust(15,'0')
+        self.dir_path = os.path.join(self.fb_dir, self.newpatt.get())
         log.info(f'getting data matching {thispatt}')
-        getLiveJpgs(thispatt, outdir=self.dir_path)
+        os.makedirs(os.path.join(self.dir_path, 'jpgs'), exist_ok=True)
+        reqdate = datetime.datetime.strptime(self.patt, '%Y%m%d_%H%M%S')
+        reqdate = reqdate + datetime.timedelta(seconds=-30)
+        getLiveJpgs(reqdate.strftime('%Y%m%d_%H%M%S'), outdir=os.path.join(self.dir_path, 'jpgs'))
         self.renameImages(self.dir_path)
         self.update_listbox(self.get_bin_list())
 
     def renameImages(self, dir_path):
-        xmllist = glob.glob(os.path.join(dir_path,'M*.xml'))
+        xmllist = glob.glob(os.path.join(dir_path,'jpgs', 'M*.xml'))
         for xmlf in xmllist:
             jpgf = xmlf.replace('.xml','P.jpg')
             if os.path.isfile(jpgf):
                 xmld = xmltodict.parse(open(xmlf).read())
                 realfname = xmld['ufocapture_record']['@cap'].replace('.fits','.jpg')
-                os.rename(jpgf, os.path.join(dir_path, realfname))
+                if not os.path.isfile(os.path.join(dir_path, 'jpgs', realfname)):
+                    os.rename(jpgf, os.path.join(dir_path, 'jpgs', realfname))
+                else:
+                    os.remove(jpgf)
                 os.remove(xmlf)
         return 
 
@@ -667,7 +673,7 @@ if __name__ == '__main__':
     print('patt is', targdir)
 
     app = fbCollector(root, patt=targdir)
-    root.iconbitmap(os.path.join(dir_,'ukmon.ico'))
+    root.iconbitmap(os.path.join(dir_,'ukmda.ico'))
     root.protocol('WM_DELETE_WINDOW', app.quitApplication)
 
     root.mainloop()

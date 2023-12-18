@@ -4,7 +4,7 @@ here="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 dt=$1
 [ ! -z $2 ] && here=$(pwd)
-dtns=${dt:0:13}
+dtns=$dt # ${dt:0:13}
 mkdir -p $here/$dtns
 cd $here/$dtns
 
