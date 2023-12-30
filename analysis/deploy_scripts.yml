@@ -23,13 +23,9 @@
     - {src: '{{srcdir}}/analysis/allCameraRadiantMap.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/refresh_local_copy.sh', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/uploadOrbit.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
-    - {src: '{{srcdir}}/analysis/uploadImprovedFTP.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/helperfunctions.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
-    - {src: '{{srcdir}}/analysis/getFireballFiles.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/manualReduction.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/fireballAnalyser.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
-    - {src: '{{srcdir}}/analysis/uploadImprovedFBFiles.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
-    - {src: '{{srcdir}}/analysis/makePPallFromPP.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/getGMNData.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
 
     - {src: '{{srcdir}}/fbCollector/fbCollector.ps1', dest: '{{destdir}}/fbCollector/', mode: '755', backup: no, directory_mode: no }
