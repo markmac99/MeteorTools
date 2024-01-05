@@ -19,6 +19,7 @@ rsync -avz ukmonhelper2:prod/data/dailyreports/ dailyreports/
 rsync -avz ukmonhelper2:prod/data/searchidx/ searchidx/
 rsync -avz ukmonhelper2:prod/data/admin/ admin/
 rsync -avz ukmonhelper2:prod/data/browse/ browse/
+rsync -avz ukmonhelper2:prod/data/costs/ costs/
 rsync -avz ukmonhelper2:prod/logs/*.log logs/ 
 find logs/ -mtime +30 -exec rm -f {} \;
 popd
