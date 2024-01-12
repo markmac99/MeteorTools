@@ -14,6 +14,8 @@ import platform
 import subprocess
 import glob
 import xmltodict
+from PIL import Image 
+import requests
 
 import boto3
 import paramiko
@@ -312,6 +314,44 @@ class fbCollector(Frame):
         return 
     
     def uploadOrbit(self):
+        pickles=[]
+        for path, _, files in os.walk(self.dir_path):
+            for name in files:
+                if '.pickle' in name and '_mc_' not in name:
+                    pickles.append(os.path.join(path, name))
+
+        if len(pickles) == 0:
+            return
+        elif len(pickles) == 1:
+            pickfile = pickles[0]
+        else:
+            pickfile = tkFileDialog.askopenfilename(title='Select Orbit Pickle', defaultextension='*.pickle',
+                                       initialdir=self.dir_path, initialfile='*.pickle',
+                                       filetypes=[('pickles','*.pickle')])
+        orbname = os.path.split(pickfile)[1]
+        tmpdir = os.path.join(self.dir_path, 'tmpzip')
+        os.makedirs(tmpdir, exist_ok=True)
+        shutil.copyfile(pickfile, os.path.join(tmpdir, orbname))
+        if os.path.isdir(os.path.join(self.dir_path, 'jpgs')):
+            shutil.copytree(os.path.join(self.dir_path, 'jpgs'), os.path.join(tmpdir, 'jpgs'))
+        if os.path.isdir(os.path.join(self.dir_path, 'mp4s')):
+            shutil.copytree(os.path.join(self.dir_path, 'mp4s'), os.path.join(tmpdir, 'mp4s'))
+        for path, _, files in os.walk(self.dir_path):
+            for name in files:
+                if '_dyn_mass_fit' in name:
+                    im = Image.open(os.path.join(path, name)).convert("RGB")
+                    im.save(os.path.join(tmpdir,'jpgs', name[:-4] + '.jpg'))
+                    break
+        zfname = os.path.join(self.dir_path, orbname[:15])
+        shutil.make_archive(zfname,'zip',tmpdir)
+        try:
+            shutil.rmtree(tmpdir)
+        except Exception:
+            pass
+        headers = {'Content-type': 'application/zip', 'Slug': orbname[:15]}
+        url = f'https://api.ukmeteors.co.uk/fireballfiles?orbitfile={orbname[:15]}.zip'
+        r = requests.put(url, data=open(zfname+'.zip', 'rb'), headers=headers) #, auth=('username', 'pass'))
+        print(r.text)
         return 
     
     def getECSVs(self):
