@@ -42,7 +42,7 @@ if ((test-path $curdir\$orbname) -eq 0 )
     mkdir -force $curdir\$orbname
     move-item $picklefile $curdir\$orbname\
 }
-$picklefile = (Get-ChildItem $curdir\$orbname\*.pickle -r).fullname
+$picklefile = (Get-ChildItem $picklefile -r).fullname
 
 write-output "look for jpgs and mp4s"
 mkdir -force $curdir\jpgs
