@@ -22,6 +22,8 @@ import paramiko
 from scp import SCPClient
 
 from meteortools.ukmondb import getECSVs as getecsv
+from wmpl.Formats.ECSV import loadECSVs
+from wmpl.Formats.GenericFunctions import solveTrajectoryGeneric
 
 import tkinter as tk
 import tkinter.filedialog as tkFileDialog
@@ -134,6 +136,7 @@ class fbCollector(Frame):
         self.selected = {}
         self.evtMonTriggered = None
         self.review_stack = False
+        self.soln_outputdir = None
 
         self.readConfig()
 
@@ -255,7 +258,12 @@ class fbCollector(Frame):
 
         solveMenu = Menu(self.menuBar, tearoff=0)
         solveMenu.add_command(label="Reduce Data", command=self.reduceCamera)
+        solveMenu.add_command(label="Toggle Ignore", command=self.ignoreCamera)
+        solveMenu.add_separator()
         solveMenu.add_command(label="Solve", command=self.solveOrbit)
+        solveMenu.add_separator()
+        solveMenu.add_command(label="View Solution", command=self.viewSolution)
+        solveMenu.add_command(label="Delete Solution", command=self.removeSolution)
         solveMenu.add_separator()
         solveMenu.add_command(label="Upload Orbit", command=self.uploadOrbit)
         self.menuBar.add_cascade(label="Solve", underline=0, menu=solveMenu)
@@ -306,11 +314,97 @@ class fbCollector(Frame):
         current_image = self.listbox.get(ACTIVE)
         if current_image == '':
             return 
-        camid = current_image[:6]
+        camid = current_image[3:9]
         print('selected camera is', camid)
         return
     
+    def ignoreCamera(self):
+        current_image = self.listbox.get(ACTIVE)
+        if current_image == '':
+            return 
+        camid = current_image[3:9]
+        print('selected camera is', camid)
+        dirname = os.path.join(self.dir_path, camid)
+        newname = os.path.join(self.dir_path, f'{camid}_REJECT')
+        try: 
+            if os.path.isdir(dirname):
+                os.rename(dirname, newname)
+                jpgs = glob.glob(os.path.join(self.dir_path, 'jpgs', f'FF_{camid}*.jpg'))
+                for jpg in jpgs:
+                    if 'REJECT' not in jpg:
+                        os.rename(jpg, f'{os.path.splitext(jpg)[0]}_REJECT.jpg')
+            else:
+                os.rename(newname,dirname)
+                jpgs = glob.glob(os.path.join(self.dir_path, 'jpgs', f'FF_{camid}*.jpg'))
+                for jpg in jpgs:
+                    if '_REJECT' in jpg:
+                        os.rename(jpg, f'{os.path.splitext(jpg)[0]}.jpg'.replace('_REJECT',''))
+        except Exception:
+            tkMessageBox.showinfo('Warning', f'Unable to find {camid}')
+        bin_list = [line for line in os.listdir(os.path.join(self.dir_path, 'jpgs')) if self.correct_datafile_name(line)]
+        for b in bin_list:
+            self.selected[b] = (0, '')
+        self.update_listbox(bin_list)
+        return
+    
     def solveOrbit(self):
+        print('Using ECSV files:')
+        ecsv_names = []
+        ecsv_paths = []
+        for entry in sorted(os.walk(self.dir_path), key=lambda x: x[0]):
+            dir_name, _, file_names = entry
+            for fn in file_names:
+                if fn.lower().endswith(".ecsv") and 'REJECT' not in dir_name:
+
+                    # Add ECSV file, but skip duplicates
+                    if fn not in ecsv_names:
+                        ecsv_paths.append(os.path.join(dir_name, fn))
+                        ecsv_names.append(fn)
+                        #print(fn)
+        if len(ecsv_paths) < 2:
+            tkMessageBox.showinfo('Warning', 'Need at least two ECSV files')
+            return 
+        jdt_ref, meteor_list = loadECSVs(ecsv_paths)
+        mcruns = 20
+        max_toffset = 5.0
+        velpart = None
+        vinitht = None
+        plotallspatial = True
+        uncertgeom = False
+        jacchia = False
+        traj = solveTrajectoryGeneric(jdt_ref, meteor_list, self.dir_path, 
+            max_toffset=max_toffset, monte_carlo=True, mc_runs=mcruns, 
+            geometric_uncert=uncertgeom, plot_all_spatial_residuals=plotallspatial, 
+            show_plots=False, v_init_part=velpart, v_init_ht=vinitht, 
+            show_jacchia=jacchia, enable_OSM_plot=True)
+        tkMessageBox.showinfo('Info', 'Solver Finished')
+        self.soln_outputdir = traj.output_dir
+        return 
+    
+    def viewSolution(self):
+        self.review_stack = False
+        if not self.soln_outputdir:
+            solndir = glob.glob1(self.dir_path, os.path.split(self.dir_path)[1][:8]+'*')
+            if len(solndir) == 0:
+                return
+            solndir = os.path.join(self.dir_path, solndir[0])
+            self.soln_outputdir = solndir
+        bin_list = [line for line in os.listdir(self.soln_outputdir) if self.correct_datafile_name(line)]
+        for b in bin_list:
+            self.selected[b] = (0, '')
+        self.update_listbox(bin_list)
+        return 
+    
+    def removeSolution(self):
+        if not self.soln_outputdir:
+            solndir = glob.glob1(self.dir_path, os.path.split(self.dir_path)[1][:8]+'*')
+            if len(solndir) == 0:
+                return
+            solndir = os.path.join(self.dir_path, solndir[0])
+            self.soln_outputdir = solndir
+        if not tkMessageBox.askyesno("Delete file", f"delete {self.soln_outputdir}?"):
+            return
+        shutil.rmtree(os.path.join(self.dir_path, self.soln_outputdir))
         return 
     
     def uploadOrbit(self):
@@ -351,7 +445,11 @@ class fbCollector(Frame):
         headers = {'Content-type': 'application/zip', 'Slug': orbname[:15]}
         url = f'https://api.ukmeteors.co.uk/fireballfiles?orbitfile={orbname[:15]}.zip'
         r = requests.put(url, data=open(zfname+'.zip', 'rb'), headers=headers) #, auth=('username', 'pass'))
-        print(r.text)
+        #print(r.text)
+        if r.status_code != 200:
+            tkMessageBox.showinfo('Warning', 'Problem with upload')
+        else:
+            tkMessageBox.showinfo('Info', 'Orbit Uploaded')
         return 
     
     def getECSVs(self):
@@ -378,7 +476,7 @@ class fbCollector(Frame):
             dirname = tkFileDialog.askdirectory(parent=root,initialdir=self.fb_dir,
                 title='Please select a directory')    
             _, thispatt = os.path.split(dirname)
-            print(dirname, thispatt)
+            #print(dirname, thispatt)
             self.dir_path = dirname
             self.patt = thispatt
             self.newpatt.set(self.patt)
@@ -387,7 +485,7 @@ class fbCollector(Frame):
             targdir = os.path.join(self.dir_path, 'jpgs')
         else:
             targdir = os.path.join(self.dir_path, 'stacks')
-        print(targdir)
+        #print(targdir)
         bin_list = [line for line in os.listdir(targdir) if self.correct_datafile_name(line)]
         return bin_list
 
@@ -399,7 +497,7 @@ class fbCollector(Frame):
             self.listbox.insert(END, line)
             if line not in self.selected:
                 self.selected[line] = (0, '')
-            print(line, self.selected[line])
+            #print(line, self.selected[line])
             if self.selected[line][0] == 1:
                 self.listbox.itemconfig(END, fg = 'green')
 
@@ -414,6 +512,7 @@ class fbCollector(Frame):
     def loadFolder(self):
         self.review_stack = False
         self.dir_path = None
+        self.soln_outputdir = None
         bin_list = self.get_bin_list()
         for b in bin_list:
             self.selected[b] = (0, '')
@@ -433,7 +532,7 @@ class fbCollector(Frame):
                 print(e)
 
     def correct_datafile_name(self, line):
-        if '.jpg' in line and 'noimage' not in line:
+        if ('.jpg' in line or '.png' in line) and 'noimage' not in line:
             return True
         return False
     
@@ -487,6 +586,8 @@ class fbCollector(Frame):
             # Check if the list is empty. If it is, do nothing.
             if self.review_stack:
                 self.current_image = os.path.join(self.dir_path, 'stacks', self.listbox.get(self.listbox.curselection()[0]))
+            elif self.soln_outputdir:
+                self.current_image = os.path.join(self.soln_outputdir, self.listbox.get(self.listbox.curselection()[0]))
             else:
                 self.current_image = os.path.join(self.dir_path, 'jpgs', self.listbox.get(self.listbox.curselection()[0]))
         except:
