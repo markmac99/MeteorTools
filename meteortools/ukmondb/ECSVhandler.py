@@ -40,7 +40,10 @@ def getECSVs(stationID, dateStr, savefiles=False, outdir='.'):
                         fname = fnamebase + f'_ukmda_{stationID}_M{j:03d}.ecsv'
                         outf = open(os.path.join(outdir, fname), 'w')
                         print('saving to ', os.path.join(outdir,fname))
-                    outf.write(f'{li}\n')
+                    if outf:
+                        outf.write(f'{li}\n')
+                    else:
+                        print('no ECSV marker found in data')
         else:
             print('no error, but no data returned')
     else:
