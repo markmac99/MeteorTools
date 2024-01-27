@@ -20,7 +20,7 @@ $enddt = [datetime]::parseexact($dt2,'yyyyMMdd', $null)
 
 $inifname ="analysis.ini"
 $ini=get-inicontent $inifname
-$localfolder=$ini['camera']['localfolder']
+$localfolder=$ini['localdata']['localfolder']
 
 while ($startdt -le $enddt){
     $dt1=$startdt.tostring('yyyyMMdd')

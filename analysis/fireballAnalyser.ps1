@@ -17,9 +17,7 @@ set-location $PSScriptRoot
 . .\helperfunctions.ps1
 $ini=get-inicontent analysis.ini
 
-#$stationdetails=$ini['fireballs']['stationdets']
-$fbfldr=$ini['fireballs']['localfolder']
-$env:PYLIB=$ini['pylib']['pylib']
+$fbfldr=$ini['localdata']['fbfolder']
 
 # set up paths
 $targpth = $fbfldr + '\' + $args[0]
@@ -31,7 +29,7 @@ $pdd=(python -c "import pyproj ; print(pyproj.datadir.get_data_dir())")
 $env:proj_dir="${pdd}"
 
 $wmplloc=$ini['wmpl']['wmpl_loc']
-$env:pythonpath="$wmplloc;$env:pylib"
+$env:pythonpath="$wmplloc"
 
 #Write-Output $env:pythonpath
 

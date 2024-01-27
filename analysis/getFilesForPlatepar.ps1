@@ -12,7 +12,7 @@ set-location $PSScriptRoot
 . .\helperfunctions.ps1
 $ini=get-inicontent analysis.ini
 
-$fbfldr=$ini['fireballs']['localfolder']
+$fbfldr=$ini['localdata']['fbfolder']
 $ppfldr=$fbfldr+'/../platepars'
 
 # camera ID from commandline

@@ -117,3 +117,9 @@ Function Test-CommandExists
  Catch {Write-Host “$command does not exist”; RETURN $false}
  Finally {$ErrorActionPreference=$oldPreference}
 } #end function test-CommandExists
+
+Function New-TemporaryFolder {
+    # Make a new folder based upon a TempFileName
+    $T="$($Env:temp)\tmp$([convert]::tostring((get-random 65535),16).padleft(4,'0')).tmp"
+    New-Item -ItemType Directory -Path $T
+}

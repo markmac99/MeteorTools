@@ -10,12 +10,12 @@ set-location $PSScriptRoot
 . .\helperfunctions.ps1
 $ini=get-inicontent analysis.ini
 
-$fbfldr=$ini['fireballs']['localfolder']
+$fbfldr=$ini['localdata']['fbfolder']
 set-location $fbfldr
 
 # read date and camera ID from commandline
-$dt = [string]$args[0]
-$cam = $args[1]
+$cam = $args[0]
+$dt = [string]$args[1]
 
 # create target path
 $tf = $cam + '_' + $dt + '_180000'

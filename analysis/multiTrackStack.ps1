@@ -9,10 +9,9 @@ push-location $PSScriptRoot
 . .\helperfunctions.ps1
 $ini=get-inicontent analysis.ini
 
-$PYLIB=$ini['pylib']['pylib']
 $RMSLOC=$ini['rms']['rms_loc']
 conda activate $ini['rms']['rms_env']
-$env:PYTHONPATH="$PYLIB;$RMSLOC"
+$env:PYTHONPATH="$RMSLOC"
 Pop-Location
 
 $conflag=""

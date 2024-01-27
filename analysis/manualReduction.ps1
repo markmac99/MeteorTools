@@ -14,8 +14,7 @@ push-location $PSScriptRoot
 . .\helperfunctions.ps1
 $ini=get-inicontent analysis.ini
 
-#$stationdetails=$ini['fireballs']['stationdets']
-$fbfldr=$ini['fireballs']['localfolder']
+$fbfldr=$ini['localdata']['fbfolder']
 set-location $fbfldr
 
 # locate target path
