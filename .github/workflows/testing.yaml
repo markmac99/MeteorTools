@@ -26,6 +26,12 @@ jobs:
         - 22
         - 443
     steps:
-      - name: Testing container
-        run: (echo $MYENV  ; zip -v ; uname -a )
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+      - run: pip install -e .
+      - run: chmod +x ./meteortools/tests/*.sh
+      - run: ./meteortools/tests/runTests.sh
+      - run: (echo $MYENV  ; zip -v ; uname -a )
 
