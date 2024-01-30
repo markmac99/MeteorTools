@@ -27,5 +27,5 @@ jobs:
         - 443
     steps:
       - name: Testing container
-        run: (ls / && echo $MYEVN )
+        run: (echo $MYENV  ; zip -v ; uname -a )
 
