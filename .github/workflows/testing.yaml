@@ -5,13 +5,27 @@ on:
     branches:
       - main
 jobs:
-  apitests:
+  #apitests:
+  #  runs-on: ubuntu-latest
+  #  steps:
+  #    - uses: actions/checkout@v3
+  #    - uses: actions/setup-python@v4
+  #      with:
+  #        python-version: '3.8'
+  #    - run: pip install -e .
+  #    - run: chmod +x ./meteortools/tests/*.sh
+  #    - run: ./meteortools/tests/runTests.sh
+
+  rmstests:
     runs-on: ubuntu-latest
+    container:
+      image: docker.io/markmac99/ubi8:latest
+      env: 
+        MYENV: foo
+      ports:
+        - 22
+        - 443
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.8'
-      - run: pip install -e .
-      - run: chmod +x ./meteortools/tests/*.sh
-      - run: ./meteortools/tests/runTests.sh
+      - name: Testing container
+        run: (ls / && echo $MYEVN )
+
