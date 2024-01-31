@@ -28,7 +28,7 @@
     - {src: '{{srcdir}}/analysis/helperfunctions.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/manualReduction.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/fireballAnalyser.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
-    - {src: '{{srcdir}}/analysis/getGMNData.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/getGMNFireballData.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
 
     - {src: '{{srcdir}}/fbCollector/fbCollector.ps1', dest: '{{destdir}}/fbCollector/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/fbCollector/fireballCollector.py', dest: '{{destdir}}/fbCollector/', mode: '755', backup: no, directory_mode: no }
