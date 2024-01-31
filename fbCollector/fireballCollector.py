@@ -231,6 +231,7 @@ class fbCollector(Frame):
         # File menu
         fileMenu = Menu(self.menuBar, tearoff=0)
         fileMenu.add_command(label="Load Folder", command=self.loadFolder)
+        fileMenu.add_command(label="Archive Folder", command=self.archiveFolder)
         fileMenu.add_command(label="Delete Folder", command=self.delFolder)
         fileMenu.add_separator()
         fileMenu.add_command(label="Exit", command=self.quitApplication)
@@ -238,6 +239,8 @@ class fbCollector(Frame):
 
         rawMenu = Menu(self.menuBar, tearoff=0)
         rawMenu.add_command(label="Get Live Images", command=self.get_data)
+        rawMenu.add_command(label="Get Videos", command=self.get_vids)
+        rawMenu.add_separator()
         rawMenu.add_command(label="Get GMN Raw Data", command=self.getGMNData)
         rawMenu.add_separator()
         rawMenu.add_command(label="Get ECSV", command=self.getECSVs)
@@ -325,22 +328,25 @@ class fbCollector(Frame):
         camid = current_image[3:9]
         print('selected camera is', camid)
         dirname = os.path.join(self.dir_path, camid)
-        newname = os.path.join(self.dir_path, f'{camid}_REJECT')
-        try: 
-            if os.path.isdir(dirname):
-                os.rename(dirname, newname)
-                jpgs = glob.glob(os.path.join(self.dir_path, 'jpgs', f'FF_{camid}*.jpg'))
-                for jpg in jpgs:
-                    if 'REJECT' not in jpg:
-                        os.rename(jpg, f'{os.path.splitext(jpg)[0]}_REJECT.jpg')
-            else:
-                os.rename(newname,dirname)
-                jpgs = glob.glob(os.path.join(self.dir_path, 'jpgs', f'FF_{camid}*.jpg'))
-                for jpg in jpgs:
-                    if '_REJECT' in jpg:
-                        os.rename(jpg, f'{os.path.splitext(jpg)[0]}.jpg'.replace('_REJECT',''))
-        except Exception:
-            tkMessageBox.showinfo('Warning', f'Unable to find {camid}')
+        allecsvs = glob.glob(os.path.join(dirname, '*.ecsv'))
+        ecsvs = [e for e in allecsvs if 'REJECT' not in e.upper()]
+        rejs = [e for e in allecsvs if 'REJECT' in e.upper()]
+        if len(ecsvs) == 0 and len(rejs) == 0:
+            print('no files to reject or include')
+            return 
+        elif len(ecsvs) == 1 and len(rejs) == 0:
+            os.rename(ecsvs[0], ecsvs[0].replce('.ecsv.','_REJECT.ecsv'))
+            jpgname = glob.glob(self.dir_path, 'jpgs', current_image)
+            os.rename(jpgname, jpgname.replace('.jpg','_REJECT.jpg'))
+            return 
+        elif len(ecsvs) == 0 and len(rejs) == 1:
+            os.rename(ecsvs[0], ecsvs[0].replce('_REJECT.ecsv','.ecsv.'))
+            jpgname = glob.glob(self.dir_path, 'jpgs', current_image)
+            os.rename(jpgname, jpgname.replace('_REJECT.jpg','.jpg'))
+            return 
+        else:
+            # more than one ECSV or REJ file to handle, urk
+            print('urk')
         bin_list = [line for line in os.listdir(os.path.join(self.dir_path, 'jpgs')) if self.correct_datafile_name(line)]
         for b in bin_list:
             self.selected[b] = (0, '')
@@ -354,7 +360,7 @@ class fbCollector(Frame):
         for entry in sorted(os.walk(self.dir_path), key=lambda x: x[0]):
             dir_name, _, file_names = entry
             for fn in file_names:
-                if fn.lower().endswith(".ecsv") and 'REJECT' not in dir_name:
+                if fn.lower().endswith(".ecsv") and 'REJECT' not in dir_name.upper() and 'REJECT' not in fn.upper():
 
                     # Add ECSV file, but skip duplicates
                     if fn not in ecsv_names:
@@ -518,6 +524,25 @@ class fbCollector(Frame):
             self.selected[b] = (0, '')
         self.update_listbox(bin_list)
 
+    def archiveFolder(self):
+        noimgdata = img.open(noimg_file).resize((640,360))
+        noimage = ImageTk.PhotoImage(noimgdata)
+        self.imagelabel.configure(image = noimage)
+        self.imagelabel.image = noimage
+        if self.dir_path is not None and self.dir_path != self.fb_dir:
+            try:
+                _, fldr = os.path.split(os.path.normpath(self.dir_path))
+                yr = fldr[:4]
+                archdir = os.path.join(self.fb_dir, yr)
+                os.makedirs(archdir, exist_ok=True)
+                zfname = os.path.join(archdir, fldr)
+                shutil.make_archive(zfname,'zip',self.fb_dir, fldr)
+                shutil.rmtree(self.dir_path)
+                self.dir_path = self.fb_dir
+            except Exception as e:
+                print(f'unable to archive {self.dir_path}')
+                print(e)
+
     def delFolder(self):
         noimgdata = img.open(noimg_file).resize((640,360))
         noimage = ImageTk.PhotoImage(noimgdata)
@@ -644,6 +669,26 @@ class fbCollector(Frame):
         getLiveJpgs(reqdate.strftime('%Y%m%d_%H%M%S'), outdir=os.path.join(self.dir_path, 'jpgs'))
         self.renameImages(self.dir_path)
         self.update_listbox(self.get_bin_list())
+
+    def get_vids(self):
+        jpglist = glob.glob1(os.path.join(self.dir_path,'jpgs'), 'FF*.jpg')
+        os.makedirs(os.path.join(self.dir_path, 'mp4s'), exist_ok=True)
+        count = 0
+        for jpg in jpglist:
+            mp4 = jpg.replace('.jpg','.mp4')
+            ym = mp4[10:16]
+            url = f'https://archive.ukmeteors.co.uk/img/mp4/{ym[:4]}/{ym}/{mp4}'
+            get_response = requests.get(url, stream=True)
+            if get_response.status_code == 200:
+                print(f'retrieved {mp4}')
+                count += 1
+                with open(os.path.join(self.dir_path, 'mp4s', mp4), 'wb') as f:
+                    for chunk in get_response.iter_content(chunk_size=4096):
+                        if chunk: # filter out keep-alive new chunks
+                            f.write(chunk)
+        print(f'retrieved {count} videos')
+        tkMessageBox.showinfo("Info", f'Retrieved {count} videos')
+        return 
 
     def renameImages(self, dir_path):
         xmllist = glob.glob(os.path.join(dir_path,'jpgs', 'M*.xml'))
