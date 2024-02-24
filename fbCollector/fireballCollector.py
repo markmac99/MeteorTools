@@ -448,7 +448,8 @@ class fbCollector(Frame):
             shutil.rmtree(tmpdir)
         except Exception:
             pass
-        headers = {'Content-type': 'application/zip', 'Slug': orbname[:15]}
+        apikey = open(os.path.expanduser('~/.ssh/fbuploadkey.txt')).readlines()[0].strip()
+        headers = {'Content-type': 'application/zip', 'Slug': orbname[:15], 'apikey': apikey}
         url = f'https://api.ukmeteors.co.uk/fireballfiles?orbitfile={orbname[:15]}.zip'
         r = requests.put(url, data=open(zfname+'.zip', 'rb'), headers=headers) #, auth=('username', 'pass'))
         #print(r.text)
