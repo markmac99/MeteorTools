@@ -180,6 +180,8 @@ class fbCollector(Frame):
         self.wmpl_env= localcfg['Fireballs']['wmpl_env']
         self.rms_loc = localcfg['Fireballs']['rms_loc']
         self.rms_env= localcfg['Fireballs']['rms_env']
+
+        self.shareloc = localcfg['Fireballs']['shrfldr']
         return
 
     def quitApplication(self):
@@ -262,6 +264,9 @@ class fbCollector(Frame):
         solveMenu = Menu(self.menuBar, tearoff=0)
         solveMenu.add_command(label="Reduce Data", command=self.reduceCamera)
         solveMenu.add_command(label="Toggle Ignore", command=self.ignoreCamera)
+        solveMenu.add_separator()
+        solveMenu.add_command(label="View Raw Data", command=self.viewData)
+        solveMenu.add_command(label="Upload Raw Data", command=self.uploadRaw)
         solveMenu.add_separator()
         solveMenu.add_command(label="Solve", command=self.solveOrbit)
         solveMenu.add_separator()
@@ -457,6 +462,25 @@ class fbCollector(Frame):
             tkMessageBox.showinfo('Warning', 'Problem with upload')
         else:
             tkMessageBox.showinfo('Info', 'Orbit Uploaded')
+        return 
+    
+    def uploadRaw(self):
+        zfname = os.path.join(os.getenv('TMP'), os.path.basename(self.dir_path))
+        print(f'zfname is {zfname}')
+        shutil.make_archive(zfname,'zip',self.dir_path)
+        try:
+            targname = os.path.join(self.shareloc, os.path.basename(zfname)+'.zip')
+            print(f'targname is {targname}')
+            shutil.copyfile(zfname+'.zip', targname)
+            tkMessageBox.showinfo('Info', 'Orbit Uploaded')
+        except Exception:
+            tkMessageBox.showinfo('Warning', 'Problem with upload')
+        return 
+    
+    def viewData(self):
+        dirpath = self.dir_path.replace('/', '\\')
+        print(f'self-dir-path {dirpath}')
+        subprocess.Popen(f'explorer "{dirpath}"')
         return 
     
     def getECSVs(self):
