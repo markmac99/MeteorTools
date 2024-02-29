@@ -32,7 +32,7 @@ def getECSVs(stationID, dateStr, savefiles=False, outdir='.'):
                 for li in ecsvlines:
                     if 'issue getting data' in li:
                         print(li)
-                        return ecsvlines
+                        return li
                     if '# %ECSV' in li:
                         if outf is not False:
                             outf.close()
