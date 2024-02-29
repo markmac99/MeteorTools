@@ -340,19 +340,19 @@ class fbCollector(Frame):
             print('no files to reject or include')
             return 
         elif len(ecsvs) == 1 and len(rejs) == 0:
-            os.rename(ecsvs[0], ecsvs[0].replace('.ecsv.','_REJECT.ecsv'))
-            jpgname = glob.glob(self.dir_path, 'jpgs', current_image)
-            os.rename(jpgname, jpgname.replace('.jpg','_REJECT.jpg'))
-            return 
+            os.rename(ecsvs[0], ecsvs[0].replace('.ecsv','_REJECT.ecsv'))
+            jpgname = glob.glob(os.path.join(self.dir_path, 'jpgs', current_image))
+            os.rename(jpgname[0], jpgname[0].replace('.jpg','_REJECT.jpg'))
         elif len(ecsvs) == 0 and len(rejs) == 1:
-            os.rename(ecsvs[0], ecsvs[0].replace('_REJECT.ecsv','.ecsv.'))
-            jpgname = glob.glob(self.dir_path, 'jpgs', current_image)
-            os.rename(jpgname, jpgname.replace('_REJECT.jpg','.jpg'))
-            return 
+            os.rename(rejs[0], rejs[0].replace('_REJECT.ecsv','.ecsv'))
+            jpgname = glob.glob(os.path.join(self.dir_path, 'jpgs', current_image))
+            os.rename(jpgname[0], jpgname[0].replace('_REJECT.jpg','.jpg'))
         else:
             # more than one ECSV or REJ file to handle, urk
             print('urk')
+            return 
         bin_list = [line for line in os.listdir(os.path.join(self.dir_path, 'jpgs')) if self.correct_datafile_name(line)]
+        #print(bin_list)
         for b in bin_list:
             self.selected[b] = (0, '')
         self.update_listbox(bin_list)
