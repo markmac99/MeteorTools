@@ -245,7 +245,7 @@ class fbCollector(Frame):
         rawMenu.add_separator()
         rawMenu.add_command(label="Get GMN Raw Data", command=self.getGMNData)
         rawMenu.add_separator()
-        rawMenu.add_command(label="Get ECSV", command=self.getECSVs)
+        rawMenu.add_command(label="Get ECSVs", command=self.getECSVs)
         self.menuBar.add_cascade(label="Raw", underline=0, menu=rawMenu)
 
         watchMenu = Menu(self.menuBar, tearoff=0)
@@ -340,12 +340,12 @@ class fbCollector(Frame):
             print('no files to reject or include')
             return 
         elif len(ecsvs) == 1 and len(rejs) == 0:
-            os.rename(ecsvs[0], ecsvs[0].replce('.ecsv.','_REJECT.ecsv'))
+            os.rename(ecsvs[0], ecsvs[0].replace('.ecsv.','_REJECT.ecsv'))
             jpgname = glob.glob(self.dir_path, 'jpgs', current_image)
             os.rename(jpgname, jpgname.replace('.jpg','_REJECT.jpg'))
             return 
         elif len(ecsvs) == 0 and len(rejs) == 1:
-            os.rename(ecsvs[0], ecsvs[0].replce('_REJECT.ecsv','.ecsv.'))
+            os.rename(ecsvs[0], ecsvs[0].replace('_REJECT.ecsv','.ecsv.'))
             jpgname = glob.glob(self.dir_path, 'jpgs', current_image)
             os.rename(jpgname, jpgname.replace('_REJECT.jpg','.jpg'))
             return 
@@ -484,7 +484,15 @@ class fbCollector(Frame):
         return 
     
     def getECSVs(self):
-        current_image = self.listbox.get(ACTIVE)
+        notgotlist=[]
+        img_list = self.get_bin_list()
+        for current_image in img_list:
+            if not self.getOneEcsv(current_image):
+                notgotlist.append(current_image)
+        tkMessageBox.showinfo('Info', f'No ECSVs for {notgotlist}')
+        return
+    
+    def getOneEcsv(self, current_image):
         if current_image[:1] == 'M':
             datestr = current_image[1:16]
             statid = current_image[-11:-5]
@@ -495,10 +503,14 @@ class fbCollector(Frame):
             return
         dtval = datetime.datetime.strptime(datestr, '%Y%m%d_%H%M%S')
         datestr = dtval.strftime('%Y-%m-%dT%H:%M:%S')
-
-        getecsv(statid, datestr, savefiles=True, outdir=os.path.join(self.dir_path, statid))
-        # curl "https://api.ukmeteors.co.uk/getecsv?dt=2023-10-29T22:01:24&stat=UK008G"
-        return
+        try:
+            lis = getecsv(statid, datestr, savefiles=True, outdir=os.path.join(self.dir_path, statid))
+            for li in lis:
+                if 'issue getting data' in li:
+                    return False
+            return True
+        except Exception:
+            return False
 
     def get_bin_list(self):
         """ Get a list of image files in a given directory.
