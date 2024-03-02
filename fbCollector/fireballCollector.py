@@ -472,7 +472,8 @@ class fbCollector(Frame):
             targname = os.path.join(self.shareloc, os.path.basename(zfname)+'.zip')
             print(f'targname is {targname}')
             shutil.copyfile(zfname+'.zip', targname)
-            tkMessageBox.showinfo('Info', 'Orbit Uploaded')
+            tkMessageBox.showinfo('Info', 'Raw Data Uploaded to Dropbox')
+            subprocess.Popen(f'explorer "{self.shareloc}"')
         except Exception:
             tkMessageBox.showinfo('Warning', 'Problem with upload')
         return 
