@@ -50,9 +50,11 @@ remove-item $destpath\*.jpg
 Write-output "copying new data"
 # for the current month we can fetch from the camera
 $currmth = (get-date -uformat '%Y%m')
-if ($ym -eq $currmth ) {
+if ($ym -eq $currmth -or ((get-date).day -lt 3)) {
     $destpath_l ="/mnt/" +$destpath.replace(':','').tolower().replace('\','/')
-    $upstreampath_l = "${hostname}:RMS_data/tmpstack/"
+    $upstreampath_l = "${hostname}:RMS_data/tmpstack/*_${ym}*.fits"
+    bash -c "rsync -avz --delete $upstreampath_l $destpath_l"
+    $upstreampath_l = "${hostname}:RMS_data/tmpstack/*.bmp"
     bash -c "rsync -avz --delete $upstreampath_l $destpath_l"
 }
 else {
