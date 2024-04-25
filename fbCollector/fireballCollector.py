@@ -28,6 +28,7 @@ from wmpl.Formats.GenericFunctions import solveTrajectoryGeneric
 import tkinter as tk
 import tkinter.filedialog as tkFileDialog
 import tkinter.messagebox as tkMessageBox
+from tkinter.simpledialog import askstring
 from tkinter import StringVar, Frame, ACTIVE, END, Listbox, Menu, Entry, Button
 from tkinter.ttk import Label, Style, LabelFrame, Scrollbar
 
@@ -242,6 +243,7 @@ class fbCollector(Frame):
         rawMenu = Menu(self.menuBar, tearoff=0)
         rawMenu.add_command(label="Get Live Images", command=self.get_data)
         rawMenu.add_command(label="Get Videos", command=self.get_vids)
+        rawMenu.add_command(label="Get Traj Pickle", command=self.get_trajpickle)
         rawMenu.add_separator()
         rawMenu.add_command(label="Get GMN Raw Data", command=self.getGMNData)
         rawMenu.add_separator()
@@ -708,6 +710,24 @@ class fbCollector(Frame):
         self.renameImages(self.dir_path)
         self.update_listbox(self.get_bin_list())
 
+    def get_trajpickle(self):
+        basepatt = os.path.split(self.dir_path)[1]
+        ymd = basepatt[:8]
+        fullpatt = askstring('Trajectory Name', 'eg 20240101_010203.345_UK', initialvalue=basepatt)
+        trajpick = f'{basepatt}_trajectory.pickle'
+        url = f'https://archive.ukmeteors.co.uk/reports/{ymd[:4]}/orbits/{ymd[:6]}/{ymd}/{fullpatt}/{trajpick}'
+        log.info(f'{url}')
+        get_response = requests.get(url, stream=True)
+        if get_response.status_code == 200:
+            log.info(f'retrieved {trajpick}')
+            with open(os.path.join(self.dir_path, trajpick), 'wb') as f:
+                for chunk in get_response.iter_content(chunk_size=4096):
+                    if chunk: # filter out keep-alive new chunks
+                        f.write(chunk)
+        else:
+            log.info(f'unable to retrieve {trajpick}, {get_response.status_code}')
+        return
+
     def get_vids(self):
         jpglist = glob.glob1(os.path.join(self.dir_path,'jpgs'), 'FF*.jpg')
         os.makedirs(os.path.join(self.dir_path, 'mp4s'), exist_ok=True)
@@ -718,13 +738,13 @@ class fbCollector(Frame):
             url = f'https://archive.ukmeteors.co.uk/img/mp4/{ym[:4]}/{ym}/{mp4}'
             get_response = requests.get(url, stream=True)
             if get_response.status_code == 200:
-                print(f'retrieved {mp4}')
+                log.info(f'retrieved {mp4}')
                 count += 1
                 with open(os.path.join(self.dir_path, 'mp4s', mp4), 'wb') as f:
                     for chunk in get_response.iter_content(chunk_size=4096):
                         if chunk: # filter out keep-alive new chunks
                             f.write(chunk)
-        print(f'retrieved {count} videos')
+        log.info(f'retrieved {count} videos')
         tkMessageBox.showinfo("Info", f'Retrieved {count} videos')
         return 
 
