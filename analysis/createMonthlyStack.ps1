@@ -111,6 +111,7 @@ else {
 #if processing the current month sync the local cleaned folder back to the tempdir on the target
 if ($ym -eq $currmth ) {
   write-output "Syncing back to remote folder"
+  $upstreampath_l = "${hostname}:RMS_data/tmpstack"
   Write-Output "$upstreampath_l"
   bash -c "rsync -avz --delete --include *.bmp --include *.fits $destpath_l/ $upstreampath_l"
 }
