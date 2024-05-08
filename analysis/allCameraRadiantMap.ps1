@@ -18,21 +18,22 @@ $ftplist=@()
 $startdt = [datetime]::parseexact($dt1,'yyyyMMdd', $null)
 $enddt = [datetime]::parseexact($dt2,'yyyyMMdd', $null)
 
-$inifname ="analysis.ini"
-$ini=get-inicontent $inifname
-$localfolder=$ini['localdata']['localfolder']
+$inifname = "analysis.ini"
+$ini = get-inicontent $inifname
+$srcfolder = $ini['localdata']['localfolder']
+$fbfolder = $ini['localdata']['fbfolder']
+$targpth = $fbfolder + '\..\radiants'
 
+$rms_loc=$ini['rms']['rms_loc']
+$rms_env=$ini['rms']['rms_env']
 while ($startdt -le $enddt){
     $dt1=$startdt.tostring('yyyyMMdd')
     for ($i=0;$i -lt $camlist.count ; $i++) { 
-        $rms_loc=$ini['rms']['rms_loc']
-        $rms_env=$ini['rms']['rms_env']
-        $srcpath=$localfolder + '\' + $camlist[$i] + '\ArchivedFiles'
-        $datedir=$srcpath + '\*_' + $dt1 + "_*" 
+        $srcpath = $srcfolder + '\' + $camlist[$i] + '\ArchivedFiles'
+        $datedir = $srcpath + '\*_' + $dt1 + "_*" 
         $dlist = (Get-ChildItem  -directory "$datedir" ).name
-        $ftpfil=$srcpath + '\' + $dlist + '\FTPdetectinfo_' + $dlist + '.txt'
+        $ftpfil = $srcpath + '\' + $dlist + '\FTPdetectinfo_' + $dlist + '.txt'
         $bftpfil = $targpth +'\tmp\' + (split-path $ftpfil -leaf)
-        $targpth=$localfolder + '\radiants'
         if ((test-path $ftpfil) -ne 0 ) {
             copy-item $ftpfil "$targpth\tmp\"
             $ftplist = $ftplist + $bftpfil
@@ -40,7 +41,8 @@ while ($startdt -le $enddt){
     }
     $startdt = $startdt.adddays(1)
 }
-$cfg = $srcpath + '/' + $dlist + '/.config'
+$cfg = $targpth + '\..\config\uk002f\.config'
+copy-item $cfg "$targpth\tmp\"
 Set-Location $rms_loc
 conda activate $rms_env
 python -m Utils.ShowerAssociation "$targpth\tmp\*" -x -c $cfg  -p gist_ncar
