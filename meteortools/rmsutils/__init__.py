@@ -6,7 +6,6 @@ The functions in this module require RMS and/or WMPL to be in the PythonPath.
 
 Require RMS:  
     multiDayRadiant  
-    multiTrackStack  
     analyseUFOwithRMS  
 
 Require WMPL:  
@@ -17,7 +16,6 @@ Require WMPL:
 """
 
 from .multiDayRadiant import multiDayRadiant
-from .multiTrackStack import multiTrackStack
 from .analyseUFOwithRMS import analyseUFOwithRMS
 from .multiEventGroundMap import multiEventGroundMap
 from .plotCAMSOrbits import plotCAMSOrbits
