@@ -6,7 +6,7 @@
 # fits files and stack whats left. 
 # After processing, the cleaned data are pushed back to ~/RMS_data/tmpstack on the Pi so that subsequent
 # runs can work from a pre-cleaned dataset. 
-# optionally, the scipt then uploads the stack to a specified location on a server and/or AWS s3. 
+# optionally, the script then uploads the stack to a specified location on a server and/or AWS s3. 
 # To disable this, set webserver  and/or cambucket a blank string in the ini file
 #
 $loc = get-location
@@ -29,7 +29,7 @@ if ($args.count -eq 2){
 
 $ini=get-inicontent "analysis.ini"
 $hostname=$ini['stations'][$camid]
-$localfolder=$ini['localdata']['localfolder'] + '/' + $camid
+$localfolder=$ini['localdata']['mthlyfolder']
 $rms_loc=$ini['rms']['rms_loc']
 $rms_env=$ini['rms']['rms_env']
 $webserver=$ini['upload']['webserver']
@@ -58,10 +58,11 @@ if ($ym -eq $currmth -or ((get-date).day -lt 3)) {
     bash -c "rsync -avz --delete $upstreampath_l $destpath_l"
 }
 else {
-    $dlist = (Get-ChildItem  -directory "$srcpath\*_$ym*" ).name
-    foreach ($path in $dlist) {
-        robocopy $srcpath\$path $destpath FF*.fits mask.bmp flat.bmp /NFL /NDL /NJH /NJS /nc /xc /ns /np /v
-    }
+    # broken at present
+    #$dlist = (Get-ChildItem  -directory "$srcpath\*_$ym*" ).name
+    #foreach ($path in $dlist) {
+    #    robocopy $srcpath\$path $destpath FF*.fits mask.bmp flat.bmp /NFL /NDL /NJH /NJS /nc /xc /ns /np /v
+    #}
 }
 
 Write-output "creating jpgs"
