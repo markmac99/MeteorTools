@@ -16,6 +16,11 @@ if [ "$2" == "all" ] ; then
     rsync -avz gmn.uwo.ca:/home/fr*/files/event_monitor/*${dt}*.bz2 $here/$dtns
     rsync -avz gmn.uwo.ca:/home/de*/files/event_monitor/*${dt}*.bz2 $here/$dtns
     rsync -avz gmn.uwo.ca:/home/es*/files/event_monitor/*${dt}*.bz2 $here/$dtns
+    rsync -avz gmn.uwo.ca:/home/ch*/files/event_monitor/*${dt}*.bz2 $here/$dtns
+    rsync -avz gmn.uwo.ca:/home/it*/files/event_monitor/*${dt}*.bz2 $here/$dtns
+    rsync -avz gmn.uwo.ca:/home/cz*/files/event_monitor/*${dt}*.bz2 $here/$dtns
+    rsync -avz gmn.uwo.ca:/home/hr*/files/event_monitor/*${dt}*.bz2 $here/$dtns
+    rsync -avz gmn.uwo.ca:/home/sk*/files/event_monitor/*${dt}*.bz2 $here/$dtns
 fi
 
 for f in *.bz2 ; do tar -xvf $f  ; done
