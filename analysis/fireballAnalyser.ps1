@@ -36,7 +36,7 @@ $env:pythonpath="$wmplloc"
 #$solver = read-host -prompt "ECSV or RMS solver? (E/R)"
 $solver = 'E'
 if ($solver -eq 'E') {
-    python -m wmpl.Formats.ECSV . -l -x -r $mcrun -w -t 5
+    python -m wmpl.Formats.ECSV . -l -x -r $mcrun -w -t 15
 }
 else {
     python -m wmpl.Trajectory.CorrelateRMS . -l 
