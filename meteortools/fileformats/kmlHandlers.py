@@ -67,8 +67,13 @@ def trackCsvtoKML(trackcsvfile, trackdata=None, saveOutput=True, outdir=None):
             #columns are lat, long, height, times
             kml.newpoint(name='', coords=[(row[1], row[0], row[2])])
     else:
+        intvl = int(len(trackdata)/100)
         for i,r in trackdata.iterrows():
-            kml.newpoint(name=f'{r[3]:.5f}', coords=[(r[1], r[0], r[2])], extrude=1, altitudemode='absolute')
+            if i % intvl == 0:
+                kml.newpoint(name=f'{r[3]:.5f}', coords=[(r[1], r[0], r[2])], extrude=1, altitudemode='absolute')
+        if len(trackdata) % intvl != 0:
+            r = trackdata.iloc[[-1]]
+            kml.newpoint(name=f'{r["times"].iloc[0]:.5f}', coords=[(r['lons'].iloc[0], r['lats'].iloc[0], r['alts'].iloc[0])], extrude=1, altitudemode='absolute')
     if 'csv' in trackcsvfile:
         outname = trackcsvfile.replace('.csv','.kml')
     else:

@@ -45,10 +45,10 @@ def trajectoryKML(trajname, outdir=None):
             times += thisstat['time_data']
         df = pd.DataFrame({"lats": np.degrees(lats), "lons": np.degrees(lons), "alts": hts, "times": times})
         df = df.sort_values(by=['times', 'lats'])
-        outfname = os.path.join(outdir, f'{trajname}.kml')
         if outdir is None:
             outdir = '.'
             os.makedirs(outdir, exist_ok=True)
+        outfname = os.path.join(outdir, f'{trajname}.kml')
         trackCsvtoKML(trajname, df, saveOutput=True, outdir=outdir)
         return outfname
     else:
