@@ -3,24 +3,26 @@
 here="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 dt=$1
-[ ! -z $2 ] && here=$(pwd)
-dtns=$dt # ${dt:0:13}
-mkdir -p $here/$dtns
-cd $here/$dtns
+basedir=$(grep basedir $here/config.ini | awk -F= '{print $2}'|tr -d '\r' | sed 's|f:|/mnt/f|g')
+echo $basedir 
+sleep 30
+dtns=$dt 
+mkdir -p $basedir/$dtns
+cd $basedir/$dtns
 
-rsync -avz gmn.uwo.ca:/home/uk*/files/event_monitor/*${dt}*.bz2 $here/$dtns
-rsync -avz gmn.uwo.ca:/home/be*/files/event_monitor/*${dt}*.bz2 $here/$dtns
-rsync -avz gmn.uwo.ca:/home/ie*/files/event_monitor/*${dt}*.bz2 $here/$dtns
-rsync -avz gmn.uwo.ca:/home/nl*/files/event_monitor/*${dt}*.bz2 $here/$dtns
+rsync -avz gmn.uwo.ca:/home/uk*/files/event_monitor/*${dt}*.bz2 $basedir/$dtns
+rsync -avz gmn.uwo.ca:/home/be*/files/event_monitor/*${dt}*.bz2 $basedir/$dtns
+rsync -avz gmn.uwo.ca:/home/ie*/files/event_monitor/*${dt}*.bz2 $basedir/$dtns
+rsync -avz gmn.uwo.ca:/home/nl*/files/event_monitor/*${dt}*.bz2 $basedir/$dtns
 if [ "$2" == "all" ] ; then 
-    rsync -avz gmn.uwo.ca:/home/fr*/files/event_monitor/*${dt}*.bz2 $here/$dtns
-    rsync -avz gmn.uwo.ca:/home/de*/files/event_monitor/*${dt}*.bz2 $here/$dtns
-    rsync -avz gmn.uwo.ca:/home/es*/files/event_monitor/*${dt}*.bz2 $here/$dtns
-    rsync -avz gmn.uwo.ca:/home/ch*/files/event_monitor/*${dt}*.bz2 $here/$dtns
-    rsync -avz gmn.uwo.ca:/home/it*/files/event_monitor/*${dt}*.bz2 $here/$dtns
-    rsync -avz gmn.uwo.ca:/home/cz*/files/event_monitor/*${dt}*.bz2 $here/$dtns
-    rsync -avz gmn.uwo.ca:/home/hr*/files/event_monitor/*${dt}*.bz2 $here/$dtns
-    rsync -avz gmn.uwo.ca:/home/sk*/files/event_monitor/*${dt}*.bz2 $here/$dtns
+    rsync -avz gmn.uwo.ca:/home/fr*/files/event_monitor/*${dt}*.bz2 $basedir/$dtns
+    rsync -avz gmn.uwo.ca:/home/de*/files/event_monitor/*${dt}*.bz2 $basedir/$dtns
+    rsync -avz gmn.uwo.ca:/home/es*/files/event_monitor/*${dt}*.bz2 $basedir/$dtns
+    rsync -avz gmn.uwo.ca:/home/ch*/files/event_monitor/*${dt}*.bz2 $basedir/$dtns
+    rsync -avz gmn.uwo.ca:/home/it*/files/event_monitor/*${dt}*.bz2 $basedir/$dtns
+    rsync -avz gmn.uwo.ca:/home/cz*/files/event_monitor/*${dt}*.bz2 $basedir/$dtns
+    rsync -avz gmn.uwo.ca:/home/hr*/files/event_monitor/*${dt}*.bz2 $basedir/$dtns
+    rsync -avz gmn.uwo.ca:/home/sk*/files/event_monitor/*${dt}*.bz2 $basedir/$dtns
 fi
 
 for f in *.bz2 ; do tar -xvf $f  ; done

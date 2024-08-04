@@ -143,7 +143,7 @@ class fbCollector(Frame):
 
         self.patt = patt
         if patt is None:
-            self.dir_path = self.fb_dir
+            self.dir_path = self.fb_dir.strip()
         else:
             self.dir_path = os.path.join(self.fb_dir, patt)
         log.info(f"Fireball folder is {self.fb_dir}")
@@ -237,6 +237,8 @@ class fbCollector(Frame):
         fileMenu.add_command(label="Archive Folder", command=self.archiveFolder)
         fileMenu.add_command(label="Delete Folder", command=self.delFolder)
         fileMenu.add_separator()
+        fileMenu.add_command(label="Configuration", command=self.showConfig)
+        fileMenu.add_separator()
         fileMenu.add_command(label="Exit", command=self.quitApplication)
         self.menuBar.add_cascade(label="File", underline=0, menu=fileMenu)
 
@@ -326,6 +328,23 @@ class fbCollector(Frame):
             return 
         camid = current_image[3:9]
         print('selected camera is', camid)
+        dirname = os.path.join(self.dir_path, camid)
+        tmpscr = os.path.join(os.getenv('TEMP'), 'reduce.ps1')
+        with open(tmpscr, 'w') as outf:
+            outf.write(f'cd {self.rms_loc}\n{self.rms_env}\npython -m Utils.SkyFit2 {dirname} -c {dirname}/.config\n')
+        _ = subprocess.run(['powershell.exe', tmpscr])
+        frs = glob.glob(os.path.join(dirname, 'FR*.bin'))
+        if len(frs) > 0:
+            if not tkMessageBox.askyesno("Rerun", f'{len(frs)} FR files detected - rerun?'):
+                return
+            for fr in frs:
+                with open(tmpscr, 'w') as outf:
+                    outf.write(f'cd {self.rms_loc}\n{self.rms_env}\npython -m Utils.SkyFit2 {fr} -c {dirname}/.config\n')
+                _ = subprocess.run(['powershell.exe', tmpscr])
+        try:
+            os.remove(tmpscr)
+        except:
+            pass
         return
     
     def ignoreCamera(self):
@@ -699,9 +718,9 @@ class fbCollector(Frame):
         return
 
     def get_data(self):
-        thispatt = self.newpatt.get()
+        thispatt = self.newpatt.get().strip()
         self.patt = thispatt.ljust(15,'0')
-        self.dir_path = os.path.join(self.fb_dir, self.newpatt.get())
+        self.dir_path = os.path.join(self.fb_dir, self.newpatt.get().strip())
         log.info(f'getting data matching {thispatt}')
         os.makedirs(os.path.join(self.dir_path, 'jpgs'), exist_ok=True)
         reqdate = datetime.datetime.strptime(self.patt, '%Y%m%d_%H%M%S')
@@ -775,6 +794,15 @@ class fbCollector(Frame):
             return
         else:
             self.putWatchlist()
+
+    def showConfig(self):
+        if platform.system() == 'Darwin':       # macOS
+            procid = subprocess.Popen(('open', config_file))
+        elif platform.system() == 'Windows':    # Windows
+            procid = subprocess.Popen(('cmd','/c',config_file))
+        else:                                   # linux variants
+            procid = subprocess.Popen(('xdg-open', config_file))
+        procid.wait()
 
     def getWatchlist(self):
         k = paramiko.RSAKey.from_private_key_file(os.path.expanduser(self.gmn_key))
