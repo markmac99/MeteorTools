@@ -235,6 +235,8 @@ class fbCollector(Frame):
         fileMenu = Menu(self.menuBar, tearoff=0)
         fileMenu.add_command(label="Load Folder", command=self.loadFolder)
         fileMenu.add_command(label="Archive Folder", command=self.archiveFolder)
+        fileMenu.add_command(label="Open Folder in Explorer", command=self.openFolder)
+        fileMenu.add_separator()
         fileMenu.add_command(label="Delete Folder", command=self.delFolder)
         fileMenu.add_separator()
         fileMenu.add_command(label="Configuration", command=self.showConfig)
@@ -582,6 +584,11 @@ class fbCollector(Frame):
         for b in bin_list:
             self.selected[b] = (0, '')
         self.update_listbox(bin_list)
+
+    def openFolder(self):
+        dir_path = self.dir_path.replace("/","\\")
+        print(dir_path)
+        os.system(f'explorer.exe {dir_path}')
 
     def archiveFolder(self):
         noimgdata = img.open(noimg_file).resize((640,360))
