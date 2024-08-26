@@ -15,6 +15,7 @@
     delegate_to: localhost
     with_items:
     - {src: '{{srcdir}}/analysis/analysis.ini', dest: '{{destdir}}/', mode: '644', backup: no, directory_mode: no }
+    - {src: '{{srcdir}}/analysis/addVidorImg.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/createMonthlyStack.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/doOneTrackStack.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }
     - {src: '{{srcdir}}/analysis/getFilesForPlatepar.ps1', dest: '{{destdir}}/', mode: '755', backup: no, directory_mode: no }

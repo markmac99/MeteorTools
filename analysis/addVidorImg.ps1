@@ -9,11 +9,6 @@ if ($args.count -lt 1) {
 }else {
     $pth = $args[0]
 }
-set-location $PSScriptRoot
-# load the helper functions
-. .\helperfunctions.ps1
-$ini=get-inicontent analysis.ini
-Set-Location $Loc
 $traj = (split-path -leaf $pth)
 
 $yr=$traj.Substring(0,4)
@@ -27,6 +22,12 @@ $pref = '<a href="'
 $mid = '"><video width="20%"><source src="'
 $tail = '" width="20%" type="video/mp4"></video></a>'
 
+$fils=(get-childitem $pth/*.mov)
+foreach ($fil in $fils){
+    $fnam = $fil.name
+    $ofnam = $fnam.replace('.mov', '.mp4')
+    ffmpeg -i $fname -vcodec h264 $ofnam
+}
 $fils=(get-childitem $pth/*.mp4)
 foreach ($fil in $fils){
     $fnam = $fil.name
@@ -34,13 +35,7 @@ foreach ($fil in $fils){
     Write-Output ${pref}${imgpth}${mid}${imgpth}${tail} >> $pth\extrampgs.html
     aws s3 cp ${fil} s3://ukmda-website${imgpth}
 }
-$fils=(get-childitem $pth/*.mov)
-foreach ($fil in $fils){
-    $fnam = $fil.name
-    $imgpth = "/img/mp4/${yr}/${ym}/${fnam}"
-    Write-Output ${pref}${imgpth}${mid}${imgpth}${tail} >> $pth\extrampgs.html
-    aws s3 cp ${fil} s3://ukmda-website${imgpth}
-}
+
 $pref = '<a href="'
 $mid = '"><img src="'
 $tail = '" width="20%"></a>'
