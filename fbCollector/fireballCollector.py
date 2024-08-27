@@ -513,7 +513,8 @@ class fbCollector(Frame):
         for current_image in img_list:
             if not self.getOneEcsv(current_image):
                 notgotlist.append(current_image)
-        tkMessageBox.showinfo('Info', f'No ECSVs for {notgotlist}')
+        if len(notgotlist) > 0: 
+            tkMessageBox.showinfo('Info', f'No ECSVs for {notgotlist}')
         return
     
     def getOneEcsv(self, current_image):
@@ -522,11 +523,11 @@ class fbCollector(Frame):
             statid = current_image[-11:-5]
         elif current_image[:2] == 'FF':
             statid = current_image[3:9]
-            datestr = current_image[10:25]
+            datestr = current_image[10:29]
         else:
             return
-        dtval = datetime.datetime.strptime(datestr, '%Y%m%d_%H%M%S')
-        datestr = dtval.strftime('%Y-%m-%dT%H:%M:%S')
+        #dtval = datetime.datetime.strptime(datestr, '%Y%m%d_%H%M%S')
+        #datestr = dtval.strftime('%Y-%m-%dT%H:%M:%S')
         try:
             lis = getecsv(statid, datestr, savefiles=True, outdir=os.path.join(self.dir_path, statid))
             for li in lis:
