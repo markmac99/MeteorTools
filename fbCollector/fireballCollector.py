@@ -400,7 +400,7 @@ class fbCollector(Frame):
             return 
         jdt_ref, meteor_list = loadECSVs(ecsv_paths)
         mcruns = 20
-        max_toffset = 5.0
+        max_toffset = 15.0
         velpart = None
         vinitht = None
         plotallspatial = True
