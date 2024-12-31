@@ -5,10 +5,17 @@
 $loc = get-location
 if ($args.count -lt 1) {
     write-output "Usage: addVideoorImg.ps1 trajpath"
+    write-output "  First create a folder for the trajectory eg 20241113_192754.345_UK"
+    write-output "  Copy any additional mp4, mov or jpgs into it, then run this script"
     exit
 }else {
     $pth = $args[0]
 }
+set-location $PSScriptRoot
+# load the helper functions
+. .\helperfunctions.ps1
+$ini=get-inicontent analysis.ini
+Set-Location $Loc
 $traj = (split-path -leaf $pth)
 
 $yr=$traj.Substring(0,4)
@@ -22,11 +29,13 @@ $pref = '<a href="'
 $mid = '"><video width="20%"><source src="'
 $tail = '" width="20%" type="video/mp4"></video></a>'
 
+echo $pth
+dir $pth/*.mov
 $fils=(get-childitem $pth/*.mov)
 foreach ($fil in $fils){
     $fnam = $fil.name
     $ofnam = $fnam.replace('.mov', '.mp4')
-    ffmpeg -i $fname -vcodec h264 $ofnam
+    ffmpeg -i $fil -vcodec h264 $pth/$ofnam
 }
 $fils=(get-childitem $pth/*.mp4)
 foreach ($fil in $fils){
@@ -46,7 +55,7 @@ foreach ($fil in $fils){
     aws s3 cp ${fil} s3://ukmda-website${imgpth}
 }
 
-aws s3 sync ${pth} s3://ukmda-website/reports/${yr}/orbits/${ym}/${ymd}/${traj}/  --exclude "*" --include "extra*.html"
+aws s3 sync ${pth} s3://ukmda-website/reports/${yr}/orbits/${ym}/${ymd}/${traj}/ --exclude "*" --include "extra*.html"
 $pickle = (get-childitem $pth/*.pickle).fullname
 aws s3 cp ${pickle} s3://ukmda-shared/matches/RMSCorrelate/trajectories/${yr}/${ym}/${ymd}/${traj}/ 
 Write-Output "uploaded $pickle at $(get-date)"
