@@ -15,7 +15,8 @@ set-location $PSScriptRoot
 # load the helper functions
 . .\helperfunctions.ps1
 $ini=get-inicontent analysis.ini
-Set-Location $Loc
+$fbfolder = $ini['localdata']['fbfolder']
+set-location $fbfolder
 $traj = (split-path -leaf $pth)
 
 $yr=$traj.Substring(0,4)
@@ -29,8 +30,8 @@ $pref = '<a href="'
 $mid = '"><video width="20%"><source src="'
 $tail = '" width="20%" type="video/mp4"></video></a>'
 
-echo $pth
-dir $pth/*.mov
+Write-Output $pth
+Get-ChildItem $pth/*.mov
 $fils=(get-childitem $pth/*.mov)
 foreach ($fil in $fils){
     $fnam = $fil.name
@@ -51,7 +52,8 @@ $tail = '" width="20%"></a>'
 $fils=(get-childitem $pth/*.jpg)
 foreach ($fil in $fils){
     $fnam = $fil.name
-    Write-Output /img/single/${yr}/${ym}/$fnam >> $pth\extrajpgs.html
+    $imgpth="/img/single/${yr}/${ym}/$fnam"
+    Write-Output ${pref}${imgpth}${mid}${imgpth}${tail} >> $pth\extrajpgs.html
     aws s3 cp ${fil} s3://ukmda-website${imgpth}
 }
 
