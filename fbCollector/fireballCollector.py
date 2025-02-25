@@ -114,6 +114,7 @@ class ConstrainedEntry(StyledEntry):
 
 
 class fbCollector(Frame):
+
     def __init__(self, parent, patt=None):
         Frame.__init__(self, parent, bg = global_bg)
         parent.configure(bg = global_bg)  # Set backgound color
@@ -553,8 +554,12 @@ class fbCollector(Frame):
             targdir = os.path.join(self.dir_path, 'jpgs')
         else:
             targdir = os.path.join(self.dir_path, 'stacks')
-        #print(targdir)
-        bin_list = [line for line in os.listdir(targdir) if self.correct_datafile_name(line)]
+        print(targdir)
+        if os.path.isdir(targdir):
+            bin_list = [line for line in os.listdir(targdir) if self.correct_datafile_name(line)]
+        else:
+            log.info('no jpgs available')
+            bin_list = []
         return bin_list
 
     def update_listbox(self, bin_list):
@@ -596,6 +601,8 @@ class fbCollector(Frame):
         noimage = ImageTk.PhotoImage(noimgdata)
         self.imagelabel.configure(image = noimage)
         self.imagelabel.image = noimage
+        if self.dir_path == self.fb_dir.strip():
+            self.loadFolder()
         if self.dir_path is not None and self.dir_path != self.fb_dir:
             try:
                 _, fldr = os.path.split(os.path.normpath(self.dir_path))
@@ -912,6 +919,7 @@ class fbCollector(Frame):
                 shutil.copy(os.path.join(srcdir, f), targ)
         shutil.rmtree(os.path.join(self.dir_path, dtstr))
         tkMessageBox.showinfo("Data Collected", 'data collected from GMN')
+        self.update_listbox(self.get_bin_list())
         return
 
 
