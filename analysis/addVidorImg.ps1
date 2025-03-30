@@ -1,6 +1,6 @@
 # Copyright (C) 2018-2023 Mark McIntyre 
 #
-# powershell script to upload an extra video or image of an event, given a trajectory ID
+# powershell script to upload an extra video or image of an event, given a trajectory ID 
 
 $loc = get-location
 if ($args.count -lt 1) {
@@ -22,43 +22,28 @@ $traj = (split-path -leaf $pth)
 $yr=$traj.Substring(0,4)
 $ym=$traj.Substring(0,6)
 $ymd=$traj.Substring(0,8)
+$pick=$traj.substring(0,15) + '_trajectory.pickle'
+$zipf=$traj.substring(0,15) + '.zip'
 
-aws s3 sync s3://ukmda-shared/matches/RMSCorrelate/trajectories/${yr}/${ym}/${ymd}/${traj}/ ${pth} --exclude "*" --include "*.pickle"
-aws s3 sync s3://ukmda-website/reports/${yr}/orbits/${ym}/${ymd}/${traj}/ ${pth} --exclude "*" --include "extra*.html"
+wget https://archive.ukmeteors.co.uk/reports/${yr}/orbits/${ym}/${ymd}/${traj}/${pick} -O ${pth}\${pick}
 
-$pref = '<a href="'
-$mid = '"><video width="20%"><source src="'
-$tail = '" width="20%" type="video/mp4"></video></a>'
+if ((test-path $pth\jpgs) -eq $false) { mkdir $pth\jpgs }
+if ((test-path $pth\mp4s) -eq $false) { mkdir $pth\mp4s }
 
-Write-Output $pth
-Get-ChildItem $pth/*.mov
-$fils=(get-childitem $pth/*.mov)
-foreach ($fil in $fils){
-    $fnam = $fil.name
-    $ofnam = $fnam.replace('.mov', '.mp4')
-    ffmpeg -i $fil -vcodec h264 $pth/$ofnam
+move-item $pth\*.jpg $pth\jpgs
+move-item $pth\*.mp4 $pth\mp4s
+
+compress-archive -path $pth\* -DestinationPath $pth\$zipf -force
+
+$apikey=(Get-Content ~/.ssh/fbuploadkey.txt)
+$headers = @{
+    'Content-type' = 'application/zip'
+    'Slug' = ${zipf}
+    'apikey'= ${apikey}
 }
-$fils=(get-childitem $pth/*.mp4)
-foreach ($fil in $fils){
-    $fnam = $fil.name
-    $imgpth = "/img/mp4/${yr}/${ym}/${fnam}"
-    Write-Output ${pref}${imgpth}${mid}${imgpth}${tail} >> $pth\extrampgs.html
-    aws s3 cp ${fil} s3://ukmda-website${imgpth}
-}
+$url = "https://api.ukmeteors.co.uk/fireballfiles?orbitfile=${zipf}"
 
-$pref = '<a href="'
-$mid = '"><img src="'
-$tail = '" width="20%"></a>'
-$fils=(get-childitem $pth/*.jpg)
-foreach ($fil in $fils){
-    $fnam = $fil.name
-    $imgpth="/img/single/${yr}/${ym}/$fnam"
-    Write-Output ${pref}${imgpth}${mid}${imgpth}${tail} >> $pth\extrajpgs.html
-    aws s3 cp ${fil} s3://ukmda-website${imgpth}
-}
+invoke-webrequest -uri $url -infile $pth\$zipf -Method PUT -Headers $headers
 
-aws s3 sync ${pth} s3://ukmda-website/reports/${yr}/orbits/${ym}/${ymd}/${traj}/ --exclude "*" --include "extra*.html"
-$pickle = (get-childitem $pth/*.pickle).fullname
-aws s3 cp ${pickle} s3://ukmda-shared/matches/RMSCorrelate/trajectories/${yr}/${ym}/${ymd}/${traj}/ 
-Write-Output "uploaded $pickle at $(get-date)"
+Write-Output "uploaded $zipf at $(get-date)"
 set-location $loc
