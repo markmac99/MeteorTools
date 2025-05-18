@@ -4,12 +4,12 @@
 #
 push-location $PSScriptRoot
 
-. ..\helperfunctions.ps1
-$ini=get-inicontent ..\analysis.ini
+. .\helperfunctions.ps1
+$ini=get-inicontent .\config.ini
 
 
 conda activate ukmon-shared
-$wmplloc=$ini['wmpl']['wmpl_loc']
+$wmplloc=$ini['fireballs']['wmpl_loc']
 $env:pythonpath="$wmplloc"
 
 if ($args.count -lt 1) {

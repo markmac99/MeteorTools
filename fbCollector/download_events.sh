@@ -3,7 +3,7 @@
 here="$( cd "$(dirname "$0")" >/dev/null 2>&1 ; pwd -P )"
 
 dt=$1
-basedir=$(grep basedir $here/config.ini | awk -F= '{print $2}'|tr -d '\r' | sed 's|f:|/mnt/f|g')
+basedir=$(grep basedir $here/config.ini | awk -F= '{print $2}'|tr -d '\r' | sed 's|f:|/mnt/f|g' | sed 's|c:|/mnt/c|g')
 echo $basedir 
 sleep 30
 dtns=$dt 
