@@ -848,6 +848,16 @@ class fbCollector(Frame):
         return 
     
     def getEventData(self):
+        evtdate = self.newpatt.get().strip()
+        if len(evtdate) < 15:
+            tkMessageBox.showinfo("Warning", f'Need seconds in the event date field {evtdate}')
+            return
+        cmd = os.path.join(os.path.dirname(__file__), 'download_events.sh') + f' {evtdate} 1'
+        if ':' in cmd:
+            drv = cmd[0].lower()
+            cmd = '/mnt/' + drv + cmd[2:]
+        cmd = cmd.replace('\\','/')
+        print('executing', cmd)
         if self.evtMonTriggered is None:
             tkMessageBox.showinfo("Warning", 'Event Monitor has not been triggered')
             return
@@ -855,11 +865,6 @@ class fbCollector(Frame):
             tkMessageBox.showinfo("Warning", f'Wait till at least {self.evtMonTriggered.strftime("%H:%M:%S")}')
             return
         os.chdir(self.fb_dir)
-        evtdate = self.newpatt.get().strip()
-        if len(evtdate) < 15:
-            tkMessageBox.showinfo("Warning", f'Need seconds in the event date field {evtdate}')
-            return
-        cmd = f'../analysis/fbCollector/download_events.sh {evtdate} 1'
         log.info(f'getting data for {evtdate}')
         procid = subprocess.Popen(('bash','-c', cmd))
         procid.wait()
